@@ -1,0 +1,2716 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI KOIN - Kelola Keuangan Bulanan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-bottom: 60px;
+        }
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card-header {
+            border-radius: 12px 12px 0 0 !important;
+            background-color: white;
+            font-weight: 600;
+        }
+        
+        .dashboard-card {
+            transition: transform 0.2s;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .nav-tabs .nav-link {
+            font-weight: 600;
+            color: #212529;
+            border: none;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: transparent;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+        }
+        
+        .transaction-item {
+            border-left: 4px solid transparent;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .transaction-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .cash-transaction {
+            border-left-color: var(--success);
+        }
+        
+        .atm-transaction {
+            border-left-color: var(--info);
+        }
+        
+        .income-transaction {
+            border-left-color: var(--primary);
+        }
+        
+        .temp-transaction {
+            border-left-color: var(--warning);
+            opacity: 0.7;
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .month-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .month-selector .btn {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .action-buttons button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .rupiah-input {
+            text-align: right;
+            font-family: monospace;
+        }
+        
+        .danger-zone {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .export-section {
+            border-left: 4px solid var(--success);
+        }
+        
+        .export-btn {
+            transition: all 0.3s;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+        }
+        
+        .user-info {
+            color: white;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            font-size: 1.5rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        #global-notification {
+            animation: slideInRight 0.3s ease-out;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Preview Report Styles */
+        .report-preview-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid #4361ee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .summary-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .transaction-table th,
+        .transaction-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .transaction-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .expense-row {
+            color: #dc3545;
+        }
+        
+        .income-row {
+            color: #198754;
+        }
+        
+        .category-chart {
+            margin: 20px 0;
+            height: 300px;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay d-none">
+        <div class="text-center">
+            <div class="spinner-border mb-3" role="status"></div>
+            <p>Memuat data...</p>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-coins me-2"></i>SI KOIN</h3>
+                <p class="mb-0">Kelola Keuangan Bulanan</p>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs mb-3" id="authTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                            Login
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">
+                            Daftar
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="authTabsContent">
+                    <div class="tab-pane fade show active" id="login" role="tabpanel">
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" id="login-username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="login-password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="register" role="tabpanel">
+                        <form id="register-form">
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" id="register-username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="register-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" id="register-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Konfirmasi Password</label>
+                                <input type="password" class="form-control" id="register-confirm-password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success">Daftar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#"><i class="fas fa-coins me-2"></i>SI KOIN</a>
+                <div class="navbar-nav ms-auto">
+                    <span class="user-info">
+                        <div id="user-avatar" class="user-avatar"></div>
+                        <span id="current-user">User</span>
+                    </span>
+                    <button class="btn btn-outline-light btn-sm" id="logout-btn">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <div class="month-selector">
+                <button class="btn btn-outline-primary" id="prev-month-btn"><i class="fas fa-chevron-left"></i></button>
+                <h4 id="current-month-year">Oktober 2023</h4>
+                <button class="btn btn-outline-primary" id="next-month-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="setup-tab" data-bs-toggle="tab" data-bs-target="#setup" type="button" role="tab">
+                        <i class="fas fa-calculator me-2"></i>Atur Budget
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+                        <i class="fas fa-chart-pie me-2"></i>Dashboard
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="transaction-tab" data-bs-toggle="tab" data-bs-target="#transaction" type="button" role="tab">
+                        <i class="fas fa-exchange-alt me-2"></i>Transaksi
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+                        <i class="fas fa-history me-2"></i>Riwayat
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis" type="button" role="tab">
+                        <i class="fas fa-chart-line me-2"></i>Analisis
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="export-tab" data-bs-toggle="tab" data-bs-target="#export" type="button" role="tab">
+                        <i class="fas fa-file-export me-2"></i>Export
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">
+                        <i class="fas fa-cog me-2"></i>Pengaturan
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                <!-- Setup Budget Tab -->
+                <div class="tab-pane fade show active" id="setup" role="tabpanel">
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="mb-4"><i class="fas fa-sliders-h me-2"></i>Atur Budget Bulanan</h3>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Total Budget Bulanan</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="text" class="form-control rupiah-input" id="budget-amount" placeholder="Masukkan jumlah budget">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Pilih Metode Pengelolaan</label>
+                                        <select class="form-select" id="management-method">
+                                            <option value="auto">Otomatis (70% Cash, 30% ATM)</option>
+                                            <option value="manual">Manual (Tentukan sendiri)</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div id="manual-allocation" style="display: none;">
+                                        <div class="mb-3">
+                                            <label class="form-label">Jumlah Cash (Tunai)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rp</span>
+                                                <input type="text" class="form-control rupiah-input" id="cash-amount" placeholder="Jumlah cash">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Jumlah Saldo ATM</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">Rp</span>
+                                                <input type="text" class="form-control rupiah-input" id="atm-amount" placeholder="Jumlah saldo ATM">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary btn-lg" id="setup-budget-btn">
+                                            <i class="fas fa-bolt me-2"></i>Terapkan Budget Saya
+                                        </button>
+                                    </div>
+                                    <div class="alert alert-warning mt-3 d-none" id="budget-validation-alert">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>Total Cash dan ATM harus sama dengan Total Budget!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-info-circle me-2"></i>Panduan</div>
+                                <div class="card-body">
+                                    <p>Tips mengatur budget:</p>
+                                    <ul>
+                                        <li>70% kebutuhan</li>
+                                        <li>20% tabungan</li>
+                                        <li>10% hiburan</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Tab -->
+                <div class="tab-pane fade" id="dashboard" role="tabpanel">
+                    <div class="alert alert-info d-none" id="no-budget-alert">
+                        <i class="fas fa-info-circle me-2"></i>Anda belum mengatur budget. Silakan pergi ke tab <strong>Atur Budget</strong>.
+                    </div>
+                    
+                    <div class="row" id="dashboard-content">
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-wallet text-primary"></i> Total Saldo</h5>
+                                    <p class="stat-number text-primary" id="total-balance">Rp 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-money-bill-wave text-success"></i> Cash</h5>
+                                    <p class="stat-number text-success" id="cash-balance">Rp 0</p>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar bg-success" id="cash-progress" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-credit-card text-info"></i> ATM</h5>
+                                    <p class="stat-number text-info" id="atm-balance">Rp 0</p>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar bg-info" id="atm-progress" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-chart-pie text-warning"></i> Budget</h5>
+                                    <p class="stat-number text-warning" id="monthly-budget">Rp 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-share-square text-danger"></i> Pengeluaran</h5>
+                                    <p class="stat-number text-danger" id="monthly-expense">Rp 0</p>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar bg-danger" id="expense-progress" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-piggy-bank text-success"></i> Sisa Budget</h5>
+                                    <p class="stat-number text-success" id="remaining-budget">Rp 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-calendar-day text-primary"></i> Rata-rata Harian</h5>
+                                    <p class="stat-number text-primary" id="daily-average">Rp 0</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card dashboard-card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><i class="fas fa-crystal-ball text-info"></i> Proyeksi</h5>
+                                    <p class="stat-number text-info" id="projection">Rp 0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Peringatan</div>
+                                <div class="card-body" id="alert-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction Tab -->
+                <div class="tab-pane fade" id="transaction" role="tabpanel">
+                    <div class="alert alert-info d-none" id="transaction-alert">
+                        <i class="fas fa-info-circle me-2"></i>Anda belum mengatur budget.
+                    </div>
+                    
+                    <div id="transaction-content">
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header"><i class="fas fa-money-bill-wave me-2"></i>Manajemen Cash</div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                                                <i class="fas fa-money-bill-wave me-2"></i>Tarik dari ATM
+                                            </button>
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#depositCashModal">
+                                                <i class="fas fa-plus-circle me-2"></i>Tambah Cash
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header"><i class="fas fa-credit-card me-2"></i>Manajemen ATM</div>
+                                    <div class="card-body">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
+                                                <i class="fas fa-exchange-alt me-2"></i>Transfer Masuk
+                                            </button>
+                                            <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#payATMModal">
+                                                <i class="fas fa-shopping-cart me-2"></i>Bayar Online
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header"><i class="fas fa-receipt me-2"></i>Input Transaksi Baru</div>
+                                    <div class="card-body">
+                                        <form id="transaction-form">
+                                            <div class="row">
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Tanggal</label>
+                                                    <input type="date" class="form-control" id="transaction-date" required>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Jenis</label>
+                                                    <select class="form-select" id="transaction-type" required>
+                                                        <option value="expense">Pengeluaran</option>
+                                                        <option value="income">Pemasukan</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Jumlah</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Rp</span>
+                                                        <input type="text" class="form-control rupiah-input" id="transaction-amount" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-3">
+                                                    <label class="form-label">Kategori</label>
+                                                    <select class="form-select" id="transaction-category" required>
+                                                        <option value="">Pilih...</option>
+                                                        <option>Makanan & Minuman</option>
+                                                        <option>Transportasi</option>
+                                                        <option>Belanja</option>
+                                                        <option>Hiburan</option>
+                                                        <option>Tagihan</option>
+                                                        <option>Lainnya</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Sumber</label>
+                                                    <select class="form-select" id="transaction-source" required>
+                                                        <option value="">Pilih...</option>
+                                                        <option>Cash</option>
+                                                        <option>ATM</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label">Keterangan</label>
+                                                    <input type="text" class="form-control" id="transaction-description" required>
+                                                </div>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-check-circle me-2"></i>Simpan Transaksi
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div class="tab-pane fade" id="history" role="tabpanel">
+                    <div class="alert alert-info d-none" id="history-alert">
+                        <i class="fas fa-info-circle me-2"></i>Belum ada riwayat transaksi.
+                    </div>
+                    
+                    <div class="card d-none" id="history-content">
+                        <div class="card-header"><i class="fas fa-history me-2"></i>Riwayat Transaksi</div>
+                        <div class="card-body" id="transaction-history"></div>
+                    </div>
+                </div>
+
+                <!-- Analysis Tab -->
+                <div class="tab-pane fade" id="analysis" role="tabpanel">
+                    <div class="alert alert-info d-none" id="analysis-alert">
+                        <i class="fas fa-info-circle me-2"></i>Data analisis akan tersedia setelah setup budget.
+                    </div>
+                    
+                    <div class="row d-none" id="analysis-content">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-chart-pie me-2"></i>Komposisi Saldo</div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="balanceChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-heartbeat me-2"></i>Kesehatan Keuangan</div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <div class="display-4 text-success" id="health-score">-</div>
+                                        <p class="text-muted">Nilai Kesehatan</p>
+                                    </div>
+                                    <h6>Rekomendasi:</h6>
+                                    <ul id="health-recommendations">
+                                        <li>Setup budget untuk melihat rekomendasi</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Tab -->
+                <div class="tab-pane fade" id="export" role="tabpanel">
+                    <div class="row mt-4">
+                        <div class="col-md-8">
+                            <div class="card export-section">
+                                <div class="card-header"><i class="fas fa-file-pdf me-2"></i>Export Laporan PDF</div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <h5>Pilih Bulan untuk Export</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Bulan</label>
+                                                <select class="form-select" id="export-month">
+                                                    <option value="0">Januari</option>
+                                                    <option value="1">Februari</option>
+                                                    <option value="2">Maret</option>
+                                                    <option value="3">April</option>
+                                                    <option value="4">Mei</option>
+                                                    <option value="5">Juni</option>
+                                                    <option value="6">Juli</option>
+                                                    <option value="7">Agustus</option>
+                                                    <option value="8">September</option>
+                                                    <option value="9">Oktober</option>
+                                                    <option value="10">November</option>
+                                                    <option value="11">Desember</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Tahun</label>
+                                                <select class="form-select" id="export-year">
+                                                    <!-- Tahun akan diisi oleh JavaScript -->
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <h5>Pilih Tipe Laporan</h5>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="reportType" id="summaryReport" value="summary" checked>
+                                                    <label class="form-check-label" for="summaryReport">
+                                                        <strong>Laporan Ringkasan</strong><br>
+                                                        <small class="text-muted">Ringkasan keuangan dan statistik utama</small>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="reportType" id="detailedReport" value="detailed">
+                                                    <label class="form-check-label" for="detailedReport">
+                                                        <strong>Laporan Detail</strong><br>
+                                                        <small class="text-muted">Semua transaksi dengan detail lengkap</small>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-success btn-lg export-btn" id="export-pdf-btn">
+                                            <i class="fas fa-file-pdf me-2"></i>Export ke PDF
+                                        </button>
+                                        <button class="btn btn-outline-primary" id="preview-report-btn">
+                                            <i class="fas fa-eye me-2"></i>Pratinjau Laporan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-info-circle me-2"></i>Informasi Export</div>
+                                <div class="card-body">
+                                    <h6>Yang termasuk dalam laporan:</h6>
+                                    <ul>
+                                        <li>Ringkasan keuangan bulanan</li>
+                                        <li>Statistik budget dan pengeluaran</li>
+                                        <li>Daftar transaksi (opsional)</li>
+                                        <li>Analisis kesehatan keuangan</li>
+                                        <li>Grafik komposisi saldo</li>
+                                    </ul>
+                                    <div class="alert alert-info mt-3">
+                                        <i class="fas fa-lightbulb me-2"></i>
+                                        <strong>Tips:</strong> Export laporan bulanan untuk arsip keuangan pribadi.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div class="row mt-4 d-none" id="preview-section">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-eye me-2"></i>Pratinjau Laporan</span>
+                                    <button class="btn btn-sm btn-outline-secondary" id="close-preview-btn">
+                                        <i class="fas fa-times me-1"></i>Tutup
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="report-preview">
+                                        <!-- Preview content akan diisi oleh JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-pane fade" id="settings" role="tabpanel">
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-database me-2"></i>Kelola Data</div>
+                                <div class="card-body">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Hapus semua data untuk bulan <strong id="current-month-settings">Oktober 2023</strong>.
+                                        Tindakan ini tidak dapat dibatalkan.
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-danger" id="delete-month-data-btn">
+                                            <i class="fas fa-trash-alt me-2"></i>Hapus Semua Data Bulan Ini
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card danger-zone">
+                                <div class="card-header text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Zona Berbahaya</div>
+                                <div class="card-body">
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        Hapus semua data aplikasi dari semua bulan. Tindakan ini tidak dapat dibatalkan.
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-danger" id="delete-all-data-btn">
+                                            <i class="fas fa-bomb me-2"></i>Hapus Semua Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary floating-btn" data-bs-toggle="modal" data-bs-target="#quickTransactionModal">
+            <i class="fas fa-plus"></i>
+        </button>
+
+        <!-- Modals (Sama seperti sebelumnya) -->
+        <!-- Quick Transaction Modal -->
+        <div class="modal fade" id="quickTransactionModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-bolt me-2"></i>Transaksi Cepat</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="quick-transaction-form">
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="quick-date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jenis</label>
+                                <select class="form-select" id="quick-type" required>
+                                    <option value="expense">Pengeluaran</option>
+                                    <option value="income">Pemasukan</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jumlah</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-input" id="quick-amount" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Kategori</label>
+                                <select class="form-select" id="quick-category" required>
+                                    <option value="">Pilih...</option>
+                                    <option>Makanan & Minuman</option>
+                                    <option>Transportasi</option>
+                                    <option>Belanja</option>
+                                    <option>Hiburan</option>
+                                    <option>Tagihan</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Sumber</label>
+                                <select class="form-select" id="quick-source" required>
+                                    <option value="">Pilih...</option>
+                                    <option>Cash</option>
+                                    <option>ATM</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Keterangan</label>
+                                <input type="text" class="form-control" id="quick-description" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="save-quick-transaction">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Tarik Tunai -->
+        <div class="modal fade" id="withdrawModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-money-bill-wave me-2"></i>Tarik dari ATM</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="withdraw-form">
+                            <div class="mb-3">
+                                <label class="form-label">Jumlah</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-input" id="withdraw-amount" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="withdraw-date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Keterangan</label>
+                                <input type="text" class="form-control" id="withdraw-description">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="confirm-withdraw">Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Tambah Cash -->
+        <div class="modal fade" id="depositCashModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Tambah Cash</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="deposit-cash-form">
+                            <div class="mb-3">
+                                <label class="form-label">Jumlah</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-input" id="deposit-cash-amount" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="deposit-cash-date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Sumber</label>
+                                <input type="text" class="form-control" id="deposit-cash-source">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="confirm-deposit-cash">Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Transfer Masuk -->
+        <div class="modal fade" id="transferModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-exchange-alt me-2"></i>Transfer Masuk</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="transfer-in-form">
+                            <div class="mb-3">
+                                <label class="form-label">Jumlah</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-input" id="transfer-in-amount" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="transfer-in-date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Pengirim</label>
+                                <input type="text" class="form-control" id="transfer-in-sender" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="confirm-transfer-in">Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Bayar Online -->
+        <div class="modal fade" id="payATMModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-shopping-cart me-2"></i>Bayar Online</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="pay-atm-form">
+                            <div class="mb-3">
+                                <label class="form-label">Jumlah</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-input" id="pay-atm-amount" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="pay-atm-date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Kategori</label>
+                                <select class="form-select" id="pay-atm-category" required>
+                                    <option value="">Pilih...</option>
+                                    <option>Belanja Online</option>
+                                    <option>Tagihan</option>
+                                    <option>Transfer</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Deskripsi</label>
+                                <input type="text" class="form-control" id="pay-atm-description" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="confirm-pay-atm">Konfirmasi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Edit Transaksi -->
+        <div class="modal fade" id="editTransactionModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Transaksi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="edit-transaction-form">
+                            <input type="hidden" id="edit-transaction-id">
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" id="edit-transaction-date" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jenis</label>
+                                <select class="form-select" id="edit-transaction-type" required>
+                                    <option value="expense">Pengeluaran</option>
+                                    <option value="income">Pemasukan</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Jumlah</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rp</span>
+                                    <input type="text" class="form-control rupiah-input" id="edit-transaction-amount" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Kategori</label>
+                                <select class="form-select" id="edit-transaction-category" required>
+                                    <option value="">Pilih...</option>
+                                    <option>Makanan & Minuman</option>
+                                    <option>Transportasi</option>
+                                    <option>Belanja</option>
+                                    <option>Hiburan</option>
+                                    <option>Tagihan</option>
+                                    <option>Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Sumber</label>
+                                <select class="form-select" id="edit-transaction-source" required>
+                                    <option value="">Pilih...</option>
+                                    <option>Cash</option>
+                                    <option>ATM</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Keterangan</label>
+                                <input type="text" class="form-control" id="edit-transaction-description" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary" id="update-transaction">Perbarui</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Hapus -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Konfirmasi Hapus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="delete-message">Apakah Anda yakin ingin menghapus data?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-danger" id="confirm-delete">Ya, Hapus</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    // ==================== SI KOIN - ULTRA OPTIMIZED VERSION ====================
+    const { jsPDF } = window.jspdf;
+
+    // === KONFIGURASI ===
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyuqIEYsGExYaC8dbjOio0CNj3HviyCAQovinxgYjFHQ_gUaU0N6GNiGUiX6NXNYuGxFA/exec';
+
+    // === VARIABEL GLOBAL ===
+    let currentUser = null;
+    let data = {
+        currentMonth: new Date().getMonth(),
+        currentYear: new Date().getFullYear()
+    };
+    let chart = null;
+    let submitting = false;
+    let deleteType = '';
+
+    // === LOCAL STORAGE SYSTEM ===
+    const STORAGE_KEYS = {
+        USER: 'sikoin_current_user',
+        LAST_LOGIN: 'sikoin_last_login'
+    };
+
+    function saveUserToStorage(userData) {
+        try {
+            const storageData = {
+                user: userData,
+                timestamp: new Date().getTime()
+            };
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(storageData));
+            localStorage.setItem(STORAGE_KEYS.LAST_LOGIN, new Date().toISOString());
+        } catch (error) {
+            console.error('Error saving to local storage:', error);
+        }
+    }
+
+    function getUserFromStorage() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEYS.USER);
+            if (!stored) return null;
+            
+            const data = JSON.parse(stored);
+            const oneWeekAgo = new Date().getTime() - (7 * 24 * 60 * 60 * 1000);
+            
+            if (data.timestamp && data.timestamp > oneWeekAgo) {
+                return data.user;
+            } else {
+                clearUserStorage();
+                return null;
+            }
+        } catch (error) {
+            clearUserStorage();
+            return null;
+        }
+    }
+
+    function clearUserStorage() {
+        try {
+            localStorage.removeItem(STORAGE_KEYS.USER);
+            localStorage.removeItem(STORAGE_KEYS.LAST_LOGIN);
+        } catch (error) {
+            console.error('Error clearing local storage:', error);
+        }
+    }
+
+    // === CACHE SYSTEM ===
+    class SIKoinCache {
+        constructor() {
+            this.cache = new Map();
+            this.pendingRequests = new Map();
+        }
+
+        async get(key, fetchFunction, ttl = 30000) {
+            const cached = this.cache.get(key);
+            
+            if (cached && Date.now() - cached.timestamp < ttl) {
+                console.log('Cache hit:', key);
+                return cached.data;
+            }
+
+            if (this.pendingRequests.has(key)) {
+                console.log('Waiting for pending request:', key);
+                return await this.pendingRequests.get(key);
+            }
+
+            const promise = fetchFunction();
+            this.pendingRequests.set(key, promise);
+
+            try {
+                const data = await promise;
+                this.cache.set(key, { data, timestamp: Date.now() });
+                return data;
+            } finally {
+                this.pendingRequests.delete(key);
+            }
+        }
+
+        invalidate(pattern) {
+            for (const key of this.cache.keys()) {
+                if (key.includes(pattern)) {
+                    this.cache.delete(key);
+                }
+            }
+        }
+    }
+
+    const sikoinCache = new SIKoinCache();
+
+    // === OPTIMIZED API CALLS ===
+    async function callGoogleScript(action, params = {}, retries = 2) {
+        const cacheKey = action + JSON.stringify(params);
+        
+        if (action === 'getMonthData') {
+            return await sikoinCache.get(cacheKey, async () => {
+                return await makeAPIRequest(action, params, retries);
+            });
+        }
+        
+        return await makeAPIRequest(action, params, retries);
+    }
+
+    async function makeAPIRequest(action, params, retries) {
+        const url = new URL(SCRIPT_URL);
+        url.searchParams.append('action', action);
+        
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null) {
+                url.searchParams.append(key, params[key].toString());
+            }
+        });
+
+        for (let attempt = 0; attempt <= retries; attempt++) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                
+                const response = await fetch(url.toString(), { signal: controller.signal });
+                clearTimeout(timeoutId);
+                
+                return await response.json();
+                
+            } catch (error) {
+                if (attempt === retries) {
+                    throw error;
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+            }
+        }
+    }
+
+    // === UTILITY FUNCTIONS ===
+    function fmt(n) {
+        if (!n && n !== 0) return '';
+        let str = n.toString().replace(/[^,\d]/g, '');
+        let split = str.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+        if (ribuan) {
+            rupiah += (sisa ? '.' : '') + ribuan.join('.');
+        }
+        return rupiah;
+    }
+
+    function toNum(str) {
+        if (!str) return 0;
+        return parseInt(str.toString().replace(/\./g, ''), 10) || 0;
+    }
+
+    function curr(amt) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency', 
+            currency: 'IDR', 
+            minimumFractionDigits: 0
+        }).format(amt);
+    }
+
+    function fmtDate(d) {
+        return new Date(d).toLocaleDateString('id-ID', {
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric'
+        });
+    }
+
+    // === NOTIFICATION SYSTEM ===
+    function showNotification(message, type = 'info') {
+        const existingNotification = document.getElementById('global-notification');
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
+        const notification = document.createElement('div');
+        notification.id = 'global-notification';
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+
+    // === AUTH FUNCTIONS ===
+    async function loginUser(username, password) {
+        try {
+            showLoading();
+            const result = await callGoogleScript('login', { username, password });
+            
+            if (result.success) {
+                saveUserToStorage(result.user);
+                showMainApp(result.user);
+                showNotification('Login berhasil!', 'success');
+            } else {
+                showNotification(result.message, 'danger');
+            }
+        } catch (error) {
+            showNotification('Error saat login: ' + error.message, 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function registerUser(username, email, password) {
+        try {
+            showLoading();
+            const result = await callGoogleScript('register', { username, email, password });
+            showNotification(result.message, result.success ? 'success' : 'danger');
+            
+            if (result.success) {
+                document.getElementById('register-form').reset();
+                document.getElementById('login-tab').click();
+            }
+        } catch (error) {
+            showNotification('Error saat registrasi: ' + error.message, 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    function logout() {
+        if (confirm('Apakah Anda yakin ingin logout?')) {
+            clearUserStorage();
+            currentUser = null;
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-form').reset();
+            showNotification('Anda telah logout', 'info');
+        }
+    }
+
+    // === AUTO-LOGIN SYSTEM ===
+    async function initializeAutoLogin() {
+        const savedUser = getUserFromStorage();
+        
+        if (savedUser) {
+            showLoading();
+            
+            try {
+                // Quick validation
+                const result = await callGoogleScript('getMonthData', {
+                    user_id: savedUser.id,
+                    year: new Date().getFullYear(),
+                    month: new Date().getMonth()
+                }, 1); // Only 1 retry for quick validation
+                
+                if (result.success || !result.message.includes('user')) {
+                    currentUser = savedUser;
+                    showMainApp(savedUser);
+                    showNotification(`Selamat datang kembali, ${savedUser.username}!`, 'success');
+                } else {
+                    clearUserStorage();
+                    showLoginScreen();
+                    showNotification('Session telah expired, silakan login kembali', 'warning');
+                }
+            } catch (error) {
+                // If validation fails, continue with local data
+                currentUser = savedUser;
+                showMainApp(savedUser);
+                showNotification(`Selamat datang, ${savedUser.username}! (Offline Mode)`, 'info');
+            } finally {
+                hideLoading();
+            }
+        } else {
+            showLoginScreen();
+        }
+    }
+
+    function showLoginScreen() {
+        document.getElementById('login-screen').style.display = 'block';
+        document.getElementById('main-app').style.display = 'none';
+    }
+
+    // === MAIN APP FUNCTIONS ===
+    function showMainApp(user) {
+        currentUser = user;
+        
+        document.getElementById('current-user').textContent = user.username;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        
+        updateUserAvatar(user.username);
+        updateDisplay();
+        updateDash();
+        setupInputs();
+        setupExportYears();
+    }
+
+    function updateUserAvatar(username) {
+        const userInfo = document.querySelector('.user-info');
+        const firstLetter = username.charAt(0).toUpperCase();
+        
+        if (!document.getElementById('user-avatar')) {
+            const avatar = document.createElement('div');
+            avatar.id = 'user-avatar';
+            avatar.className = 'user-avatar';
+            avatar.textContent = firstLetter;
+            avatar.title = username;
+            userInfo.insertBefore(avatar, userInfo.firstChild);
+        } else {
+            document.getElementById('user-avatar').textContent = firstLetter;
+        }
+    }
+
+    function updateDisplay() {
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                       "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        document.getElementById('current-month-year').textContent = 
+            `${months[data.currentMonth]} ${data.currentYear}`;
+        document.getElementById('current-month-settings').textContent = 
+            `${months[data.currentMonth]} ${data.currentYear}`;
+    }
+
+    // === DASHBOARD FUNCTIONS ===
+    async function updateDash() {
+        try {
+            showDashboardSkeleton();
+            const m = await getMonthData();
+            
+            if (m.budget > 0) {
+                document.getElementById('no-budget-alert').classList.add('d-none');
+                document.getElementById('dashboard-content').classList.remove('d-none');
+                document.getElementById('transaction-alert').classList.add('d-none');
+                document.getElementById('transaction-content').classList.remove('d-none');
+                document.getElementById('history-alert').classList.add('d-none');
+                document.getElementById('history-content').classList.remove('d-none');
+                document.getElementById('analysis-alert').classList.add('d-none');
+                document.getElementById('analysis-content').classList.remove('d-none');
+                
+                updateCriticalMetrics(m);
+                
+                // Load charts and history in background
+                setTimeout(() => {
+                    updateCharts(m);
+                    updateHistory();
+                }, 100);
+            } else {
+                document.getElementById('no-budget-alert').classList.remove('d-none');
+                document.getElementById('dashboard-content').classList.add('d-none');
+                document.getElementById('transaction-alert').classList.remove('d-none');
+                document.getElementById('transaction-content').classList.add('d-none');
+                document.getElementById('history-alert').classList.remove('d-none');
+                document.getElementById('history-content').classList.add('d-none');
+                document.getElementById('analysis-alert').classList.remove('d-none');
+                document.getElementById('analysis-content').classList.add('d-none');
+            }
+        } catch (error) {
+            console.error('Error updating dashboard:', error);
+            showNotification('Error memuat data', 'danger');
+        }
+    }
+
+    function showDashboardSkeleton() {
+        const elements = document.querySelectorAll('.stat-number, .progress-bar');
+        elements.forEach(el => {
+            el.classList.add('loading-skeleton');
+            if (el.classList.contains('stat-number')) {
+                el.textContent = '---';
+            }
+        });
+    }
+
+    function updateCriticalMetrics(m) {
+        const exp = m.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+        const inc = m.transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+        
+        document.getElementById('total-balance').textContent = curr(m.cash + m.atm);
+        document.getElementById('cash-balance').textContent = curr(m.cash);
+        document.getElementById('atm-balance').textContent = curr(m.atm);
+        document.getElementById('monthly-budget').textContent = curr(m.budget);
+        document.getElementById('monthly-expense').textContent = curr(exp);
+        document.getElementById('remaining-budget').textContent = curr(m.budget - exp + inc);
+        
+        const total = m.cash + m.atm;
+        const cashPct = total > 0 ? Math.round((m.cash / total) * 100) : 0;
+        const atmPct = 100 - cashPct;
+        const expPct = m.budget > 0 ? Math.min(Math.round((exp / m.budget) * 100), 100) : 0;
+        
+        document.getElementById('cash-progress').style.width = `${cashPct}%`;
+        document.getElementById('atm-progress').style.width = `${atmPct}%`;
+        document.getElementById('expense-progress').style.width = `${expPct}%`;
+        
+        const today = new Date();
+        const lastDay = new Date(data.currentYear, data.currentMonth + 1, 0);
+        const daysLeft = lastDay.getDate() - today.getDate();
+        const totalDays = lastDay.getDate();
+        const daysPassed = totalDays - daysLeft;
+        
+        const dailyAvg = daysPassed > 0 ? exp / daysPassed : 0;
+        const projection = m.budget - exp + inc;
+        
+        document.getElementById('projection').textContent = curr(projection);
+        document.getElementById('daily-average').textContent = curr(dailyAvg);
+        
+        // Remove skeleton
+        document.querySelectorAll('.loading-skeleton').forEach(el => {
+            el.classList.remove('loading-skeleton');
+        });
+        
+        updateAlerts(expPct);
+    }
+
+    function updateCharts(m) {
+        const total = m.cash + m.atm;
+        const cashPct = total > 0 ? Math.round((m.cash / total) * 100) : 0;
+        const atmPct = 100 - cashPct;
+        const exp = m.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+        const expPct = m.budget > 0 ? Math.min(Math.round((exp / m.budget) * 100), 100) : 0;
+        const daysLeft = new Date(data.currentYear, data.currentMonth + 1, 0).getDate() - new Date().getDate();
+        
+        updateAnalysis(cashPct, atmPct, expPct, daysLeft);
+    }
+
+    function updateAnalysis(cashPct, atmPct, expPct, daysLeft) {
+        const ctx = document.getElementById('balanceChart').getContext('2d');
+        if (chart) chart.destroy();
+        
+        chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cash', 'ATM'],
+                datasets: [{
+                    data: [cashPct, atmPct], 
+                    backgroundColor: ['#4cc9f0', '#4895ef'], 
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+        
+        let score = 'B';
+        if (expPct < 70) score = 'A';
+        if (expPct > 90) score = 'C';
+        document.getElementById('health-score').textContent = score;
+        
+        const recs = document.getElementById('health-recommendations');
+        recs.innerHTML = '';
+        if (expPct > 80) {
+            recs.innerHTML += '<li>Pengeluaran melebihi 80%. Kurangi pengeluaran non-esensial.</li>';
+        }
+        if (cashPct < 20) {
+            recs.innerHTML += '<li>Cash kurang dari 20%. Tarik tunai dari ATM.</li>';
+        }
+        if (recs.children.length === 0) {
+            recs.innerHTML = '<li>Keuangan sehat. Pertahankan!</li>';
+        }
+    }
+
+    function updateAlerts(expPct) {
+        const container = document.getElementById('alert-container');
+        container.innerHTML = '';
+        if (expPct > 80) {
+            container.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Budget hampir habis! Perhatikan pengeluaran Anda.</div>';
+        } else if (expPct > 60) {
+            container.innerHTML = '<div class="alert alert-warning"><i class="fas fa-exclamation-circle me-2"></i>Pengeluaran sudah melebihi 60%. Hati-hati!</div>';
+        } else {
+            container.innerHTML = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Keuangan dalam kondisi baik!</div>';
+        }
+    }
+
+    // === HISTORY FUNCTIONS ===
+    async function updateHistory() {
+        const container = document.getElementById('transaction-history');
+        container.innerHTML = '';
+        
+        try {
+            const m = await getMonthData();
+            
+            if (m.transactions.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center">Belum ada transaksi</p>';
+                return;
+            }
+            
+            [...m.transactions]
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .forEach(t => {
+                    const cls = t.type === 'income' ? 'income-transaction' : 
+                               t.source === 'Cash' ? 'cash-transaction' : 'atm-transaction';
+                    const div = document.createElement('div');
+                    div.className = `transaction-item ${cls}`;
+                    div.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-0">${t.description}</h6>
+                                <small class="text-muted">${fmtDate(t.date)} - ${t.category} - ${t.source}</small>
+                            </div>
+                            <div class="text-end">
+                                <p class="mb-0 ${t.type === 'income' ? 'text-success' : 'text-danger'}">
+                                    ${t.type === 'income' ? '+' : '-'} ${curr(t.amount)}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-outline-primary edit-btn" data-id="${t.id}">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger del-btn" data-id="${t.id}">
+                                <i class="fas fa-trash me-1"></i>Hapus
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    editTrans(this.getAttribute('data-id'));
+                });
+            });
+            
+            document.querySelectorAll('.del-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    delTrans(this.getAttribute('data-id'));
+                });
+            });
+        } catch (error) {
+            console.error('Error updating history:', error);
+            container.innerHTML = '<p class="text-danger text-center">Error memuat riwayat transaksi</p>';
+        }
+    }
+
+    async function editTrans(id) {
+        try {
+            const m = await getMonthData();
+            const t = m.transactions.find(tr => tr.id == id);
+            if (t) {
+                document.getElementById('edit-transaction-id').value = t.id;
+                document.getElementById('edit-transaction-date').value = t.date;
+                document.getElementById('edit-transaction-type').value = t.type;
+                document.getElementById('edit-transaction-amount').value = fmt(t.amount.toString());
+                document.getElementById('edit-transaction-category').value = t.category;
+                document.getElementById('edit-transaction-source').value = t.source;
+                document.getElementById('edit-transaction-description').value = t.description;
+                new bootstrap.Modal(document.getElementById('editTransactionModal')).show();
+            }
+        } catch (error) {
+            showNotification('Error memuat data transaksi: ' + error.message, 'danger');
+        }
+    }
+
+    async function delTrans(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+            try {
+                const result = await deleteTransaction(parseInt(id));
+                if (result.success) {
+                    await updateDash();
+                    showNotification('Transaksi berhasil dihapus!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error menghapus transaksi: ' + error.message, 'danger');
+            }
+        }
+    }
+
+    // === DATABASE FUNCTIONS ===
+    async function getMonthData() {
+        const result = await callGoogleScript('getMonthData', {
+            user_id: currentUser.id,
+            year: data.currentYear,
+            month: data.currentMonth
+        });
+        
+        if (result.success) {
+            return result.data;
+        } else {
+            return { budget: 0, cash: 0, atm: 0, transactions: [] };
+        }
+    }
+
+    async function saveBudget(budgetData) {
+        return await callGoogleScript('saveBudget', {
+            user_id: currentUser.id,
+            year: data.currentYear,
+            month: data.currentMonth,
+            budget: budgetData.budget,
+            cash: budgetData.cash,
+            atm: budgetData.atm
+        });
+    }
+
+    async function saveTransaction(transactionData) {
+        return await callGoogleScript('saveTransaction', {
+            user_id: currentUser.id,
+            year: data.currentYear,
+            month: data.currentMonth,
+            type: transactionData.type,
+            amount: transactionData.amount,
+            category: transactionData.category,
+            description: transactionData.description,
+            source: transactionData.source,
+            date: transactionData.date
+        });
+    }
+
+    async function updateTransaction(transactionId, transactionData) {
+        return await callGoogleScript('updateTransaction', {
+            transaction_id: transactionId,
+            type: transactionData.type,
+            amount: transactionData.amount,
+            category: transactionData.category,
+            description: transactionData.description,
+            source: transactionData.source,
+            date: transactionData.date
+        });
+    }
+
+    async function deleteTransaction(transactionId) {
+        return await callGoogleScript('deleteTransaction', {
+            transaction_id: transactionId
+        });
+    }
+
+    async function deleteCurrentMonthData() {
+        return await callGoogleScript('deleteMonthData', {
+            user_id: currentUser.id,
+            year: data.currentYear,
+            month: data.currentMonth
+        });
+    }
+
+    async function deleteAllUserData() {
+        return await callGoogleScript('deleteAllUserData', {
+            user_id: currentUser.id
+        });
+    }
+
+    async function getMonthDataForExport(year, month) {
+        const result = await callGoogleScript('getMonthData', {
+            user_id: currentUser.id,
+            year: year,
+            month: month
+        });
+        
+        if (result.success) {
+            return result.data;
+        } else {
+            return { budget: 0, cash: 0, atm: 0, transactions: [] };
+        }
+    }
+
+    // === UI HELPER FUNCTIONS ===
+    function setupInputs() {
+        document.querySelectorAll('.rupiah-input').forEach(inp => {
+            inp.addEventListener('blur', e => {
+                e.target.value = fmt(e.target.value);
+            });
+            inp.addEventListener('focus', e => {
+                e.target.value = e.target.value.replace(/\./g, '');
+            });
+            inp.addEventListener('keypress', e => {
+                const code = e.which || e.keyCode;
+                if (code > 31 && (code < 48 || code > 57)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    }
+
+    function setupExportYears() {
+        const yearSelect = document.getElementById('export-year');
+        const currentYear = new Date().getFullYear();
+        
+        yearSelect.innerHTML = '';
+        
+        for (let year = currentYear - 2; year <= currentYear + 2; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            if (year === data.currentYear) {
+                option.selected = true;
+            }
+            yearSelect.appendChild(option);
+        }
+        
+        document.getElementById('export-month').value = data.currentMonth;
+    }
+
+    function showLoading() {
+        document.getElementById('loading-overlay').classList.remove('d-none');
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-overlay').classList.add('d-none');
+    }
+
+    // === EXPORT FUNCTIONS (YANG SUDAH DIPERBAIKI) ===
+    async function exportToPDF() {
+        try {
+            const month = parseInt(document.getElementById('export-month').value);
+            const year = parseInt(document.getElementById('export-year').value);
+            const reportType = document.querySelector('input[name="reportType"]:checked').value;
+            
+            const monthData = await getMonthDataForExport(year, month);
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                           "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const monthName = months[month];
+            
+            if (monthData.budget === 0 && monthData.transactions.length === 0) {
+                showNotification('Tidak ada data untuk bulan yang dipilih!', 'warning');
+                return;
+            }
+            
+            showLoading();
+            
+            // Buat PDF baru
+            const doc = new jsPDF();
+            
+            // Header
+            doc.setFontSize(20);
+            doc.setTextColor(67, 97, 238); // Primary color
+            doc.text('SI KOIN - Laporan Keuangan', 20, 30);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`Bulan: ${monthName} ${year}`, 20, 40);
+            doc.text(`User: ${currentUser.username}`, 20, 47);
+            doc.text(`Tanggal Export: ${new Date().toLocaleDateString('id-ID')}`, 20, 54);
+            
+            // Ringkasan Keuangan
+            const expenses = monthData.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+            const income = monthData.transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+            const net = income - expenses;
+            
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('Ringkasan Keuangan', 20, 70);
+            
+            doc.setFontSize(10);
+            doc.text(`Budget: ${curr(monthData.budget)}`, 20, 80);
+            doc.text(`Total Pengeluaran: ${curr(expenses)}`, 20, 87);
+            doc.text(`Total Pemasukan: ${curr(income)}`, 20, 94);
+            doc.text(`Saldo Akhir: ${curr(net)}`, 20, 101);
+            
+            // Persentase Penggunaan Budget
+            const budgetUsage = monthData.budget > 0 ? (expenses / monthData.budget) * 100 : 0;
+            doc.text(`Penggunaan Budget: ${budgetUsage.toFixed(1)}%`, 20, 108);
+            
+            // Komposisi Saldo
+            const totalBalance = monthData.cash + monthData.atm;
+            const cashPercentage = totalBalance > 0 ? (monthData.cash / totalBalance) * 100 : 0;
+            const atmPercentage = totalBalance > 0 ? (monthData.atm / totalBalance) * 100 : 0;
+            
+            doc.text(`Komposisi Saldo:`, 20, 120);
+            doc.text(`- Cash: ${curr(monthData.cash)} (${cashPercentage.toFixed(1)}%)`, 25, 127);
+            doc.text(`- ATM: ${curr(monthData.atm)} (${atmPercentage.toFixed(1)}%)`, 25, 134);
+            
+            // Jika laporan detail, tambahkan tabel transaksi
+            if (reportType === 'detailed' && monthData.transactions.length > 0) {
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.text('Daftar Transaksi', 20, 20);
+                
+                // Header tabel
+                const tableHeaders = [['Tanggal', 'Kategori', 'Deskripsi', 'Jenis', 'Jumlah']];
+                
+                // Data tabel
+                const tableData = monthData.transactions
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .map(t => [
+                        new Date(t.date).toLocaleDateString('id-ID'),
+                        t.category,
+                        t.description,
+                        t.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
+                        curr(t.amount)
+                    ]);
+                
+                // Buat tabel
+                doc.autoTable({
+                    startY: 30,
+                    head: tableHeaders,
+                    body: tableData,
+                    theme: 'grid',
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [67, 97, 238] }
+                });
+            }
+            
+            // Simpan PDF
+            doc.save(`Laporan_Keuangan_${monthName}_${year}.pdf`);
+            
+            showNotification('Laporan PDF berhasil diunduh!', 'success');
+            
+        } catch (error) {
+            console.error('Error exporting PDF:', error);
+            showNotification('Error mengekspor PDF: ' + error.message, 'danger');
+        } finally {
+            hideLoading();
+        }
+    }
+
+    async function previewReport() {
+        try {
+            const month = parseInt(document.getElementById('export-month').value);
+            const year = parseInt(document.getElementById('export-year').value);
+            const reportType = document.querySelector('input[name="reportType"]:checked').value;
+            
+            const monthData = await getMonthDataForExport(year, month);
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                           "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const monthName = months[month];
+            
+            if (monthData.budget === 0 && monthData.transactions.length === 0) {
+                showNotification('Tidak ada data untuk bulan yang dipilih!', 'warning');
+                return;
+            }
+            
+            // Hitung statistik
+            const expenses = monthData.transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+            const income = monthData.transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
+            const net = income - expenses;
+            const budgetUsage = monthData.budget > 0 ? (expenses / monthData.budget) * 100 : 0;
+            const totalBalance = monthData.cash + monthData.atm;
+            const cashPercentage = totalBalance > 0 ? (monthData.cash / totalBalance) * 100 : 0;
+            const atmPercentage = totalBalance > 0 ? (monthData.atm / totalBalance) * 100 : 0;
+            
+            // Buat HTML untuk preview
+            let previewHTML = `
+                <div class="report-preview-container">
+                    <div class="report-header">
+                        <h3><i class="fas fa-coins me-2"></i>SI KOIN - Laporan Keuangan</h3>
+                        <p class="mb-1">Bulan: ${monthName} ${year}</p>
+                        <p class="mb-1">User: ${currentUser.username}</p>
+                        <p class="mb-0">Tanggal Preview: ${new Date().toLocaleDateString('id-ID')}</p>
+                    </div>
+                    
+                    <h4 class="mt-4">Ringkasan Keuangan</h4>
+                    <div class="report-summary">
+                        <div class="summary-card">
+                            <div class="summary-label">Budget</div>
+                            <div class="summary-value text-warning">${curr(monthData.budget)}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Pengeluaran</div>
+                            <div class="summary-value text-danger">${curr(expenses)}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Pemasukan</div>
+                            <div class="summary-value text-success">${curr(income)}</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Saldo Akhir</div>
+                            <div class="summary-value ${net >= 0 ? 'text-success' : 'text-danger'}">${curr(net)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="summary-card">
+                                <div class="summary-label">Penggunaan Budget</div>
+                                <div class="summary-value">${budgetUsage.toFixed(1)}%</div>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar ${budgetUsage > 80 ? 'bg-danger' : budgetUsage > 60 ? 'bg-warning' : 'bg-success'}" 
+                                         style="width: ${Math.min(budgetUsage, 100)}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="summary-card">
+                                <div class="summary-label">Komposisi Saldo</div>
+                                <div class="mt-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Cash:</span>
+                                        <span>${curr(monthData.cash)} (${cashPercentage.toFixed(1)}%)</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>ATM:</span>
+                                        <span>${curr(monthData.atm)} (${atmPercentage.toFixed(1)}%)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            `;
+            
+            // Tambahkan tabel transaksi jika laporan detail
+            if (reportType === 'detailed' && monthData.transactions.length > 0) {
+                previewHTML += `
+                    <h4 class="mt-4">Daftar Transaksi</h4>
+                    <table class="transaction-table">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Kategori</th>
+                                <th>Deskripsi</th>
+                                <th>Jenis</th>
+                                <th>Jumlah</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                monthData.transactions
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .forEach(t => {
+                        previewHTML += `
+                            <tr class="${t.type === 'income' ? 'income-row' : 'expense-row'}">
+                                <td>${new Date(t.date).toLocaleDateString('id-ID')}</td>
+                                <td>${t.category}</td>
+                                <td>${t.description}</td>
+                                <td>${t.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</td>
+                                <td>${curr(t.amount)}</td>
+                            </tr>
+                        `;
+                    });
+                
+                previewHTML += `
+                        </tbody>
+                    </table>
+                `;
+            }
+            
+            previewHTML += `</div>`;
+            
+            // Tampilkan preview
+            document.getElementById('report-preview').innerHTML = previewHTML;
+            document.getElementById('preview-section').classList.remove('d-none');
+            
+            // Scroll ke preview
+            document.getElementById('preview-section').scrollIntoView({ behavior: 'smooth' });
+            
+        } catch (error) {
+            console.error('Error previewing report:', error);
+            showNotification('Error membuat preview: ' + error.message, 'danger');
+        }
+    }
+
+    // === EVENT LISTENERS ===
+    function setupEventListeners() {
+        // Login Form
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showNotification('Username dan password harus diisi!', 'warning');
+                return;
+            }
+            
+            await loginUser(username, password);
+        });
+        
+        // Register Form
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            if (!username || !email || !password) {
+                showNotification('Semua field harus diisi!', 'warning');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Password dan konfirmasi password tidak cocok!', 'warning');
+                return;
+            }
+            
+            await registerUser(username, email, password);
+        });
+        
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        
+        // Budget Management
+        document.getElementById('management-method').addEventListener('change', function() {
+            document.getElementById('manual-allocation').style.display = 
+                this.value === 'manual' ? 'block' : 'none';
+        });
+        
+        document.getElementById('setup-budget-btn').addEventListener('click', async function() {
+            const budget = toNum(document.getElementById('budget-amount').value);
+            if (!budget) {
+                showNotification('Masukkan jumlah budget!', 'warning');
+                return;
+            }
+            
+            const method = document.getElementById('management-method').value;
+            let cash, atm;
+            
+            if (method === 'manual') {
+                cash = toNum(document.getElementById('cash-amount').value);
+                atm = toNum(document.getElementById('atm-amount').value);
+                if (cash + atm !== budget) {
+                    document.getElementById('budget-validation-alert').classList.remove('d-none');
+                    return;
+                }
+            } else {
+                cash = Math.round(budget * 0.7);
+                atm = budget - cash;
+            }
+            
+            document.getElementById('budget-validation-alert').classList.add('d-none');
+            
+            try {
+                showLoading();
+                const result = await saveBudget({ budget, cash, atm });
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    showNotification(`Budget ${curr(budget)} berhasil diterapkan!`, 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error menyimpan budget: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Transaction Form
+        document.getElementById('transaction-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (submitting) return;
+            submitting = true;
+            
+            const date = document.getElementById('transaction-date').value;
+            const type = document.getElementById('transaction-type').value;
+            const amount = toNum(document.getElementById('transaction-amount').value);
+            const category = document.getElementById('transaction-category').value;
+            const source = document.getElementById('transaction-source').value;
+            const description = document.getElementById('transaction-description').value;
+            
+            if (!date || !type || !amount || !category || !source || !description) {
+                showNotification('Semua field harus diisi!', 'warning');
+                submitting = false;
+                return;
+            }
+            
+            try {
+                showLoading();
+                const m = await getMonthData();
+                
+                if (type === 'expense') {
+                    if ((source === 'Cash' && m.cash < amount) || (source === 'ATM' && m.atm < amount)) {
+                        showNotification(`Saldo ${source} tidak cukup!`, 'warning');
+                        submitting = false;
+                        hideLoading();
+                        return;
+                    }
+                }
+                
+                const result = await saveTransaction({
+                    type, amount, category, description, source, date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    this.reset();
+                    document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+                    showNotification('Transaksi berhasil dicatat!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error menyimpan transaksi: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+                submitting = false;
+            }
+        });
+        
+        // Quick Transaction
+        document.getElementById('save-quick-transaction').addEventListener('click', async function() {
+            if (submitting) return;
+            submitting = true;
+            
+            const date = document.getElementById('quick-date').value;
+            const type = document.getElementById('quick-type').value;
+            const amount = toNum(document.getElementById('quick-amount').value);
+            const category = document.getElementById('quick-category').value;
+            const source = document.getElementById('quick-source').value;
+            const description = document.getElementById('quick-description').value;
+            
+            if (!date || !type || !amount || !category || !source || !description) {
+                showNotification('Semua field harus diisi!', 'warning');
+                submitting = false;
+                return;
+            }
+            
+            try {
+                showLoading();
+                const m = await getMonthData();
+                
+                if (type === 'expense') {
+                    if ((source === 'Cash' && m.cash < amount) || (source === 'ATM' && m.atm < amount)) {
+                        showNotification(`Saldo ${source} tidak cukup!`, 'warning');
+                        submitting = false;
+                        hideLoading();
+                        return;
+                    }
+                }
+                
+                const result = await saveTransaction({
+                    type, amount, category, description, source, date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('quickTransactionModal')).hide();
+                    document.getElementById('quick-transaction-form').reset();
+                    document.getElementById('quick-date').value = new Date().toISOString().split('T')[0];
+                    showNotification('Transaksi berhasil dicatat!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error menyimpan transaksi: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+                submitting = false;
+            }
+        });
+        
+        // Update Transaction
+        document.getElementById('update-transaction').addEventListener('click', async function() {
+            const id = document.getElementById('edit-transaction-id').value;
+            const date = document.getElementById('edit-transaction-date').value;
+            const type = document.getElementById('edit-transaction-type').value;
+            const amount = toNum(document.getElementById('edit-transaction-amount').value);
+            const category = document.getElementById('edit-transaction-category').value;
+            const source = document.getElementById('edit-transaction-source').value;
+            const description = document.getElementById('edit-transaction-description').value;
+            
+            if (!id || !date || !type || !amount || !category || !source || !description) {
+                showNotification('Semua field harus diisi!', 'warning');
+                return;
+            }
+            
+            try {
+                showLoading();
+                const result = await updateTransaction(parseInt(id), {
+                    type, amount, category, description, source, date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('editTransactionModal')).hide();
+                    showNotification('Transaksi berhasil diperbarui!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error memperbarui transaksi: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Month Navigation
+        document.getElementById('prev-month-btn').addEventListener('click', async function() {
+            data.currentMonth--;
+            if (data.currentMonth < 0) {
+                data.currentMonth = 11;
+                data.currentYear--;
+            }
+            updateDisplay();
+            sikoinCache.invalidate('getMonthData');
+            await updateDash();
+            setupExportYears();
+        });
+        
+        document.getElementById('next-month-btn').addEventListener('click', async function() {
+            data.currentMonth++;
+            if (data.currentMonth > 11) {
+                data.currentMonth = 0;
+                data.currentYear++;
+            }
+            updateDisplay();
+            sikoinCache.invalidate('getMonthData');
+            await updateDash();
+            setupExportYears();
+        });
+        
+        // Withdraw Modal
+        document.getElementById('confirm-withdraw').addEventListener('click', async function() {
+            const amount = toNum(document.getElementById('withdraw-amount').value);
+            const date = document.getElementById('withdraw-date').value;
+            const desc = document.getElementById('withdraw-description').value || 'Tarik ATM ke Cash';
+            
+            if (!amount) {
+                showNotification('Masukkan jumlah!', 'warning');
+                return;
+            }
+            
+            try {
+                showLoading();
+                const m = await getMonthData();
+                
+                if (m.atm < amount) {
+                    showNotification('Saldo ATM tidak cukup!', 'warning');
+                    hideLoading();
+                    return;
+                }
+                
+                const result = await saveTransaction({
+                    type: 'transfer', 
+                    amount, 
+                    category: 'Transfer', 
+                    description: desc, 
+                    source: 'ATM', 
+                    date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('withdrawModal')).hide();
+                    document.getElementById('withdraw-form').reset();
+                    document.getElementById('withdraw-date').value = new Date().toISOString().split('T')[0];
+                    showNotification('Penarikan berhasil!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error melakukan penarikan: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Deposit Cash
+        document.getElementById('confirm-deposit-cash').addEventListener('click', async function() {
+            const amount = toNum(document.getElementById('deposit-cash-amount').value);
+            const date = document.getElementById('deposit-cash-date').value;
+            const source = document.getElementById('deposit-cash-source').value || 'Manual';
+            
+            if (!amount) {
+                showNotification('Masukkan jumlah!', 'warning');
+                return;
+            }
+            
+            try {
+                showLoading();
+                const result = await saveTransaction({
+                    type: 'income', 
+                    amount, 
+                    category: 'Deposit', 
+                    description: `Tambah Cash: ${source}`, 
+                    source: 'Cash', 
+                    date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('depositCashModal')).hide();
+                    document.getElementById('deposit-cash-form').reset();
+                    document.getElementById('deposit-cash-date').value = new Date().toISOString().split('T')[0];
+                    showNotification('Setoran berhasil!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error melakukan setoran: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Transfer In
+        document.getElementById('confirm-transfer-in').addEventListener('click', async function() {
+            const amount = toNum(document.getElementById('transfer-in-amount').value);
+            const date = document.getElementById('transfer-in-date').value;
+            const sender = document.getElementById('transfer-in-sender').value || 'Unknown';
+            
+            if (!amount) {
+                showNotification('Masukkan jumlah!', 'warning');
+                return;
+            }
+            
+            try {
+                showLoading();
+                const result = await saveTransaction({
+                    type: 'income', 
+                    amount, 
+                    category: 'Transfer', 
+                    description: `Transfer dari ${sender}`, 
+                    source: 'ATM', 
+                    date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('transferModal')).hide();
+                    document.getElementById('transfer-in-form').reset();
+                    document.getElementById('transfer-in-date').value = new Date().toISOString().split('T')[0];
+                    showNotification('Transfer berhasil dicatat!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error mencatat transfer: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Pay ATM
+        document.getElementById('confirm-pay-atm').addEventListener('click', async function() {
+            const amount = toNum(document.getElementById('pay-atm-amount').value);
+            const date = document.getElementById('pay-atm-date').value;
+            const category = document.getElementById('pay-atm-category').value;
+            const description = document.getElementById('pay-atm-description').value;
+            
+            if (!amount || !category || !description) {
+                showNotification('Semua field harus diisi!', 'warning');
+                return;
+            }
+            
+            try {
+                showLoading();
+                const m = await getMonthData();
+                
+                if (m.atm < amount) {
+                    showNotification('Saldo ATM tidak cukup!', 'warning');
+                    hideLoading();
+                    return;
+                }
+                
+                const result = await saveTransaction({
+                    type: 'expense', 
+                    amount, 
+                    category, 
+                    description, 
+                    source: 'ATM', 
+                    date
+                });
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('payATMModal')).hide();
+                    document.getElementById('pay-atm-form').reset();
+                    document.getElementById('pay-atm-date').value = new Date().toISOString().split('T')[0];
+                    showNotification('Pembayaran berhasil dicatat!', 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error mencatat pembayaran: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Delete Data
+        document.getElementById('delete-month-data-btn').addEventListener('click', function() {
+            deleteType = 'month';
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                           "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('delete-message').textContent = 
+                `Apakah Anda yakin ingin menghapus SEMUA data untuk bulan ${months[data.currentMonth]} ${data.currentYear}? Tindakan ini tidak dapat dibatalkan.`;
+            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+        });
+        
+        document.getElementById('delete-all-data-btn').addEventListener('click', function() {
+            deleteType = 'all';
+            document.getElementById('delete-message').textContent = 
+                'Apakah Anda yakin ingin menghapus SEMUA data aplikasi dari SEMUA bulan? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua budget dan transaksi Anda.';
+            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+        });
+        
+        document.getElementById('confirm-delete').addEventListener('click', async function() {
+            try {
+                showLoading();
+                let result;
+                
+                if (deleteType === 'month') {
+                    result = await deleteCurrentMonthData();
+                } else if (deleteType === 'all') {
+                    result = await deleteAllUserData();
+                }
+                
+                if (result.success) {
+                    sikoinCache.invalidate('getMonthData');
+                    await updateDash();
+                    bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                    showNotification(result.message, 'success');
+                } else {
+                    showNotification('Error: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                showNotification('Error menghapus data: ' + error.message, 'danger');
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Export PDF
+        document.getElementById('export-pdf-btn').addEventListener('click', async function() {
+            await exportToPDF();
+        });
+        
+        // Preview Report
+        document.getElementById('preview-report-btn').addEventListener('click', async function() {
+            await previewReport();
+        });
+        
+        document.getElementById('close-preview-btn').addEventListener('click', function() {
+            document.getElementById('preview-section').classList.add('d-none');
+        });
+    }
+
+    // === INITIALIZATION ===
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            showLoading();
+            
+            // Set default dates
+            const today = new Date().toISOString().split('T')[0];
+            const dateInputs = [
+                'transaction-date', 'quick-date', 'withdraw-date', 
+                'deposit-cash-date', 'transfer-in-date', 'pay-atm-date'
+            ];
+            
+            dateInputs.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = today;
+                }
+            });
+            
+            // Initialize auto-login
+            await initializeAutoLogin();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('SI KOIN initialized with auto-login and caching!');
+            
+        } catch (error) {
+            console.error('Error initializing application:', error);
+            showNotification('Error menginisialisasi aplikasi', 'danger');
+        } finally {
+            hideLoading();
+        }
+    });
+    </script>
+</body>
+</html>
