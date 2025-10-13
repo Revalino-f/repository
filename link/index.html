@@ -1,1 +1,795 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>repal.me - Free URL Shortener</title>
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            margin-right: 0.5rem;
+        }
+
+        .brand-text {
+            color: #4a6cf7;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4a6cf7;
+        }
+
+        .admin-btn {
+            background-color: #4a6cf7;
+            color: white !important;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+        }
+
+        /* Shortener Card */
+        .shortener-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4a6cf7;
+        }
+
+        .custom-domain {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .domain-prefix {
+            background-color: #f5f7ff;
+            padding: 1rem;
+            border-right: 1px solid #ddd;
+            color: #4a6cf7;
+            font-weight: 500;
+        }
+
+        .custom-domain input {
+            border: none;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #4a6cf7, #6a82fb);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 108, 247, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Result Section */
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            color: #333;
+            display: none;
+        }
+
+        .success-message {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .success-message span:first-child {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .short-url-display {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .short-url-display input {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f8f9fa;
+        }
+
+        .btn-copy {
+            background-color: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn-copy:hover {
+            background-color: #3a5ce5;
+        }
+
+        .result-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+        }
+
+        /* Recent Links Section */
+        .recent-links {
+            padding: 5rem 0;
+            background-color: #f8f9fa;
+        }
+
+        .links-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .link-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .link-info {
+            flex: 1;
+        }
+
+        .link-original {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+
+        .link-short {
+            color: #4a6cf7;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .link-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .link-stat {
+            text-align: center;
+        }
+
+        .link-stat-value {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .link-stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-brand {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .footer-text {
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .short-url-display {
+                flex-direction: column;
+            }
+            
+            .short-url-display input {
+                border-radius: 8px 8px 0 0;
+            }
+            
+            .btn-copy {
+                border-radius: 0 0 8px 8px;
+                padding: 1rem;
+            }
+            
+            .result-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .link-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .link-stats {
+                width: 100%;
+                justify-content: space-around;
+            }
+        }
+    </style>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <span class="logo">🔗</span>
+                <span class="brand-text">repal.me</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#stats">Stats</a>
+                <a href="admin.html" class="admin-btn">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Shorten Your Links with <span class="gradient-text">repal.me</span></h1>
+                <p class="hero-subtitle">Free, fast, and reliable URL shortener. Track your links and grow your audience.</p>
+                
+                <!-- URL Shortener Form -->
+                <div class="shortener-card">
+                    <div class="input-group">
+                        <input type="url" id="original-url" placeholder="Paste your long URL here..." required>
+                    </div>
+                    <div class="input-group">
+                        <div class="custom-domain">
+                            <span class="domain-prefix" id="domain-prefix">repal.me/</span>
+                            <input type="text" id="custom-slug" placeholder="custom-name (optional)" maxlength="50">
+                        </div>
+                    </div>
+                    <button id="shorten-btn" class="btn-primary">
+                        <span class="btn-text">Shorten URL</span>
+                        <span class="btn-loading" style="display: none;">⏳ Creating...</span>
+                    </button>
+                </div>
+
+                <!-- Result Section -->
+                <div class="result-card" id="result-section">
+                    <div class="success-message">
+                        <span>✅</span>
+                        <span>Your short URL is ready!</span>
+                    </div>
+                    <div class="short-url-display">
+                        <input type="text" id="short-url" readonly>
+                        <button id="copy-btn" class="btn-copy">Copy</button>
+                    </div>
+                    <div class="result-stats">
+                        <div class="stat">
+                            <span class="stat-label">Clicks:</span>
+                            <span class="stat-value" id="click-count">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Created:</span>
+                            <span class="stat-value" id="created-date">Just now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose repal.me?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Instant URL shortening with sub-millisecond redirects</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Track clicks, locations, and referral sources</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Reliable</h3>
+                    <p>HTTPS encryption and 99.9% uptime guarantee</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Custom Domains</h3>
+                    <p>Use your own domain for branded short links</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Links Section -->
+    <section class="recent-links">
+        <div class="container">
+            <h2 class="section-title">Your Recent Short Links</h2>
+            <div id="links-container" class="links-container">
+                <!-- Links will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo">🔗</span>
+                    <span class="brand-text">repal.me</span>
+                </div>
+                <p class="footer-text">Free URL shortener built with ❤️ for the community</p>
+                <div class="footer-links">
+                    <a href="#privacy">Privacy</a>
+                    <a href="#terms">Terms</a>
+                    <a href="admin.html">Admin</a>
+                    <a href="https://github.com/yourusername/repal.me" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Data storage using localStorage
+        const STORAGE_KEY = 'repalme_links';
+        
+        // Get DOM elements
+        const originalUrlInput = document.getElementById('original-url');
+        const customSlugInput = document.getElementById('custom-slug');
+        const shortenBtn = document.getElementById('shorten-btn');
+        const resultSection = document.getElementById('result-section');
+        const shortUrlInput = document.getElementById('short-url');
+        const copyBtn = document.getElementById('copy-btn');
+        const clickCount = document.getElementById('click-count');
+        const createdDate = document.getElementById('created-date');
+        const linksContainer = document.getElementById('links-container');
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide result section initially
+            resultSection.style.display = 'none';
+            
+            // Load recent links
+            loadRecentLinks();
+            
+            // Set up event listeners
+            shortenBtn.addEventListener('click', shortenUrl);
+            copyBtn.addEventListener('click', copyShortUrl);
+            
+            // Allow pressing Enter to shorten URL
+            originalUrlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    shortenUrl();
+                }
+            });
+            
+            customSlugInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    shortenUrl();
+                }
+            });
+        });
+        
+        // Function to shorten URL
+        function shortenUrl() {
+            const originalUrl = originalUrlInput.value.trim();
+            const customSlug = customSlugInput.value.trim();
+            
+            // Validate URL
+            if (!isValidUrl(originalUrl)) {
+                alert('Please enter a valid URL (e.g., https://example.com)');
+                return;
+            }
+            
+            // Validate custom slug if provided
+            if (customSlug && !isValidSlug(customSlug)) {
+                alert('Custom name can only contain letters, numbers, hyphens, and underscores');
+                return;
+            }
+            
+            // Show loading state
+            shortenBtn.disabled = true;
+            shortenBtn.querySelector('.btn-text').style.display = 'none';
+            shortenBtn.querySelector('.btn-loading').style.display = 'inline';
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Generate slug
+                const slug = customSlug || generateRandomSlug();
+                
+                // Create short URL
+                const shortUrl = `https://repal.me/${slug}`;
+                
+                // Save to storage
+                saveLink(originalUrl, slug, shortUrl);
+                
+                // Display result
+                displayResult(shortUrl);
+                
+                // Reset button state
+                shortenBtn.disabled = false;
+                shortenBtn.querySelector('.btn-text').style.display = 'inline';
+                shortenBtn.querySelector('.btn-loading').style.display = 'none';
+                
+                // Reload recent links
+                loadRecentLinks();
+            }, 800);
+        }
+        
+        // Function to validate URL
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Function to validate slug
+        function isValidSlug(slug) {
+            const slugRegex = /^[a-zA-Z0-9_-]+$/;
+            return slugRegex.test(slug);
+        }
+        
+        // Function to generate random slug
+        function generateRandomSlug() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Function to save link to storage
+        function saveLink(originalUrl, slug, shortUrl) {
+            const links = getStoredLinks();
+            
+            // Check if slug already exists
+            if (links.some(link => link.slug === slug)) {
+                alert('This custom name is already taken. Please choose another one.');
+                return false;
+            }
+            
+            // Create new link object
+            const newLink = {
+                id: Date.now().toString(),
+                originalUrl,
+                slug,
+                shortUrl,
+                clicks: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add to beginning of array
+            links.unshift(newLink);
+            
+            // Save to localStorage
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+            
+            return true;
+        }
+        
+        // Function to get stored links
+        function getStoredLinks() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+        
+        // Function to display result
+        function displayResult(shortUrl) {
+            shortUrlInput.value = shortUrl;
+            clickCount.textContent = '0';
+            createdDate.textContent = 'Just now';
+            resultSection.style.display = 'block';
+            
+            // Scroll to result
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Function to copy short URL to clipboard
+        function copyShortUrl() {
+            shortUrlInput.select();
+            shortUrlInput.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy';
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+        
+        // Function to load recent links
+        function loadRecentLinks() {
+            const links = getStoredLinks();
+            linksContainer.innerHTML = '';
+            
+            if (links.length === 0) {
+                linksContainer.innerHTML = '<p style="text-align: center; color: #666;">No links created yet. Create your first short URL above!</p>';
+                return;
+            }
+            
+            // Display only the 5 most recent links
+            const recentLinks = links.slice(0, 5);
+            
+            recentLinks.forEach(link => {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'link-item';
+                
+                // Format date
+                const date = new Date(link.createdAt);
+                const formattedDate = date.toLocaleDateString();
+                
+                linkElement.innerHTML = `
+                    <div class="link-info">
+                        <div class="link-original">${truncateUrl(link.originalUrl, 50)}</div>
+                        <div class="link-short">${link.shortUrl}</div>
+                    </div>
+                    <div class="link-stats">
+                        <div class="link-stat">
+                            <div class="link-stat-value">${link.clicks}</div>
+                            <div class="link-stat-label">Clicks</div>
+                        </div>
+                        <div class="link-stat">
+                            <div class="link-stat-value">${formattedDate}</div>
+                            <div class="link-stat-label">Created</div>
+                        </div>
+                    </div>
+                `;
+                
+                linksContainer.appendChild(linkElement);
+            });
+        }
+        
+        // Function to truncate URL for display
+        function truncateUrl(url, maxLength) {
+            if (url.length <= maxLength) return url;
+            return url.substring(0, maxLength) + '...';
+        }
+    </script>
+</body>
+</html>
