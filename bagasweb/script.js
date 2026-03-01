@@ -10,8 +10,9 @@ let kuisData = [
     { judul: "Kuis Deskripsi", deskripsi: "Latihan soal deskripsi.", linkMateri: "", linkFile: "https://example.com/kuis-deskripsi.pdf" }
 ];
 
+// Video dengan URL yang pasti valid (embed YouTube)
 let videoData = [
-    { judul: "Pengantar Teks Narasi", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", deskripsi: "Video penjelasan teks narasi" },
+    { judul: "Pengantar Teks Narasi", url: "https://youtu.be/dQw4w9WgXcQ?si=BA1jw5wH6jpT1lGZ", deskripsi: "Video pertama di YouTube (contoh)" },
     { judul: "Contoh Teks Deskripsi", url: "https://www.youtube.com/embed/3JZ_D3ELwOQ", deskripsi: "Contoh dan analisis" }
 ];
 
@@ -37,6 +38,21 @@ document.querySelectorAll('.nav-menu a').forEach(link => {
         navMenu.classList.remove('active');
     });
 });
+
+// ===== FUNGSI KONVERSI URL YOUTUBE KE EMBED =====
+function convertToEmbedUrl(url) {
+    if (!url) return '';
+    // Jika sudah embed, kembalikan apa adanya
+    if (url.includes('/embed/')) return url;
+    
+    // Pola untuk youtube.com/watch?v=VIDEO_ID
+    let match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+    if (match) {
+        return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    // Jika tidak cocok, kembalikan URL asli (mungkin sudah embed atau domain lain)
+    return url;
+}
 
 // ===== RENDER FUNCTIONS =====
 function renderLinkButtons(item) {
@@ -125,14 +141,19 @@ function tambahKuis() {
 
 function tambahVideo() {
     const judul = document.getElementById('judulVideo').value.trim();
-    const url = document.getElementById('urlVideo').value.trim();
+    let url = document.getElementById('urlVideo').value.trim();
     const deskripsi = document.getElementById('deskripsiVideo').value.trim();
     if (!judul || !url) return alert('Judul dan URL wajib diisi');
-    // Validasi sederhana: pastikan URL mengandung embed (opsional)
-    if (!url.includes('embed') && !url.includes('youtube.com')) {
-        alert('Harap masukkan URL embed YouTube yang valid (contoh: https://www.youtube.com/embed/...)');
-        // tetap lanjut? terserah, tapi beri peringatan
+    
+    // Konversi URL ke format embed
+    url = convertToEmbedUrl(url);
+    
+    // Validasi sederhana: pastikan hasilnya mengandung embed (opsional)
+    if (!url.includes('/embed/')) {
+        alert('URL tidak dikenali sebagai YouTube. Pastikan Anda memasukkan link YouTube yang benar.');
+        // Tetap tambahkan, tapi beri peringatan
     }
+    
     videoData.push({ judul, url, deskripsi });
     renderVideo();
     document.getElementById('judulVideo').value = '';
