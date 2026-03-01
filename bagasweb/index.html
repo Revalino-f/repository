@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teksia Premium · Materi + Link</title>
+    <!-- Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Eksternal -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar dengan hamburger -->
+    <nav>
+        <div class="logo">Teksia</div>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#materi">Materi</a></li>
+            <li><a href="#kuis">Kuis</a></li>
+            <li><a href="#video">Video</a></li>
+            <li><a href="#about">Tentang</a></li>
+            <li><a href="#lokasi">Lokasi</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="login-btn" id="adminLoginBtn">Admin</button>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Platform Pembelajaran Modern</h1>
+        <p>Belajar Bahasa Indonesia lebih interaktif, modern, dan menyenangkan bersama Teksia.</p>
+    </div>
+
+    <!-- Materi -->
+    <section id="materi">
+        <h2>Materi Pembelajaran</h2>
+        <div class="materi-container" id="materiContainer"></div>
+    </section>
+
+    <!-- Kuis -->
+    <section id="kuis">
+        <h2>Kuis Pembelajaran</h2>
+        <div class="materi-container" id="kuisContainer"></div>
+    </section>
+
+    <!-- Video -->
+    <section id="video">
+        <h2>Video Pembelajaran</h2>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video Pembelajaran" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <!-- Tentang -->
+    <section id="about">
+        <h2>Tentang Teksia</h2>
+        <div class="card">
+            Teksia adalah platform pembelajaran Bahasa Indonesia berbasis digital yang modern dan interaktif. Dikembangkan untuk siswa dan guru agar pengalaman belajar lebih menyenangkan.
+        </div>
+    </section>
+
+    <!-- Lokasi -->
+    <section id="lokasi">
+        <h2>Lokasi Penelitian</h2>
+        <div class="card">
+            <p>Balungbendo, Sidoarjo, Jawa Timur</p>
+            <br>
+            <iframe src="https://www.google.com/maps?q=Balungbendo,Sidoarjo,JawaTimur&output=embed" title="Peta Balungbendo"></iframe>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        © 2026 Teksia - Platform Pembelajaran Bahasa Indonesia. All rights reserved.
+    </footer>
+
+    <!-- Modal Login -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h3>Login Admin</h3>
+            <input type="text" id="username" placeholder="Username" value="admin">
+            <input type="password" id="password" placeholder="Password" value="123">
+            <button class="btn" id="loginConfirmBtn">Masuk</button>
+            <button class="btn" style="background:#999;" onclick="document.getElementById('loginModal').style.display='none'">Batal</button>
+        </div>
+    </div>
+
+    <!-- Floating Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="panel-header">
+            <h2>Panel Admin</h2>
+            <div>
+                <button onclick="toggleAdminPanel()" title="Tutup panel">✕</button>
+            </div>
+        </div>
+        <p style="margin-bottom:10px;">Tambah materi/kuis dengan link.</p>
+        
+        <h3>➕ Tambah Materi</h3>
+        <input type="text" id="judulMateri" placeholder="Judul materi">
+        <textarea id="deskripsiMateri" placeholder="Deskripsi materi" rows="2"></textarea>
+        <input type="url" id="linkMateri" placeholder="URL Materi (opsional)">
+        <input type="url" id="fileMateri" placeholder="URL File pendukung (opsional)">
+        <button class="btn" onclick="tambahMateri()">Tambah Materi</button>
+
+        <h3>➕ Tambah Kuis</h3>
+        <input type="text" id="judulKuis" placeholder="Judul kuis">
+        <textarea id="deskripsiKuis" placeholder="Deskripsi kuis" rows="2"></textarea>
+        <input type="url" id="linkKuis" placeholder="URL Kuis (opsional)">
+        <input type="url" id="fileKuis" placeholder="URL File pendukung (opsional)">
+        <button class="btn" onclick="tambahKuis()">Tambah Kuis</button>
+
+        <div style="display: flex; gap:10px; margin-top:20px;">
+            <button class="btn logout-btn" onclick="logout()">Logout</button>
+            <button class="btn" onclick="toggleAdminPanel()">Tutup</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Eksternal -->
+    <script src="script.js"></script>
+</body>
+</html>
