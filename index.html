@@ -3,593 +3,651 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>repal.me · game random hub</title>
+  <title>Revalino Firdaus · Game Developer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cream: #faf7f2;
-      --warm-white: #fff9f2;
-      --sand: #f0ebe0;
-      --amber: #f59e0b;
-      --amber-light: #fde68a;
-      --amber-dark: #d97706;
-      --coral: #fb7185;
-      --teal: #14b8a6;
-      --violet: #8b5cf6;
-      --ink: #1c1917;
+      --bg: #f7f4ef;
+      --surface: #ffffff;
+      --ink: #1a1714;
       --ink-light: #44403c;
-      --muted: #78716c;
-      --border: #e7e0d6;
-      --card-bg: #ffffff;
-      --shadow-soft: 0 4px 24px rgba(28,25,23,0.07);
-      --shadow-med: 0 12px 40px rgba(28,25,23,0.12);
+      --muted: #9c9690;
+      --border: #e8e3db;
+      --amber: #f0a500;
+      --amber-pale: #fff8e6;
+      --teal: #0ea5a0;
+      --coral: #f06060;
+      --green: #22c55e;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--cream);
-      min-height: 100vh;
-      padding: 32px 16px 48px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
       color: var(--ink);
-      background-image: 
-        radial-gradient(circle at 80% 10%, #fde68a44 0%, transparent 50%),
-        radial-gradient(circle at 10% 80%, #14b8a622 0%, transparent 40%);
+      overflow-x: hidden;
     }
 
-    .container {
-      max-width: 1200px;
-      width: 100%;
+    /* ─── NAV ─── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 56px;
+      border-bottom: 1px solid var(--border);
+      background: #f7f4efee;
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(14px);
     }
 
-    /* ── HEADER ── */
-    .brand {
-      text-align: center;
-      margin-bottom: 48px;
-      padding: 0 8px;
+    .nav-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.35rem;
+      color: var(--ink);
+      letter-spacing: -0.4px;
+    }
+    .nav-logo span { color: var(--amber); }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+
+    .nav-cta {
+      background: var(--ink) !important;
+      color: white !important;
+      padding: 9px 22px;
+      border-radius: 100px;
+      font-size: 0.85rem !important;
+      font-weight: 600 !important;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .nav-cta:hover { background: var(--amber) !important; color: var(--ink) !important; transform: scale(1.03); }
+
+    /* ─── HERO ─── */
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 56px 80px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: center;
     }
 
-    .brand-tag {
+    .hero-left { animation: fadeUp 0.7s ease both; }
+
+    .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: var(--amber-light);
-      color: #92400e;
-      font-family: 'Syne', sans-serif;
-      font-size: 0.72rem;
+      gap: 7px;
+      background: var(--amber-pale);
+      border: 1px solid #f0c96050;
+      color: #9a6200;
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 5px 14px;
+      padding: 6px 14px;
       border-radius: 100px;
-      margin-bottom: 14px;
+      margin-bottom: 22px;
     }
 
-    .brand h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(3rem, 8vw, 5.5rem);
-      font-weight: 800;
-      letter-spacing: -3px;
+    .hero-badge .dot {
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 100px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(3rem, 6vw, 5.2rem);
+      letter-spacing: -2px;
+      line-height: 1.05;
       color: var(--ink);
-      line-height: 1;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
-    .brand h1 .dot {
-      color: var(--amber);
-    }
+    .hero h1 em { font-style: italic; color: var(--amber); }
 
-    .brand p {
+    .hero-role {
       font-size: 1rem;
       color: var(--muted);
-      font-weight: 300;
+      font-weight: 400;
+      margin-bottom: 22px;
       letter-spacing: 0.02em;
     }
 
-    /* ── GRID ── */
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 48px;
+    .hero-desc {
+      font-size: 1.05rem;
+      color: var(--ink-light);
+      font-weight: 300;
+      line-height: 1.8;
+      max-width: 480px;
+      margin-bottom: 36px;
     }
 
-    .game-card {
-      background: var(--card-bg);
-      border-radius: 28px;
-      padding: 28px 24px 32px;
-      box-shadow: var(--shadow-soft);
+    .hero-desc strong { font-weight: 600; color: var(--ink); }
+
+    .hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+    .btn-main {
+      background: var(--ink);
+      color: white;
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: background 0.15s, transform 0.1s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-main:hover { background: var(--amber); color: var(--ink); transform: scale(1.02); }
+
+    .btn-ghost {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: color 0.15s;
       border: 1.5px solid var(--border);
+      padding: 12px 22px;
+      border-radius: 100px;
+    }
+    .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+
+    /* avatar card */
+    .hero-right {
+      animation: fadeUp 0.7s 0.15s ease both;
+      flex-shrink: 0;
+    }
+
+    .avatar-card {
+      width: 240px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 28px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(26,23,20,0.08);
+    }
+
+    .avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--coral));
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Instrument Serif', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -1px;
+      margin: 0 auto 14px;
+      box-shadow: 0 6px 20px #f0a50040;
+    }
+
+    .avatar-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .avatar-school {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .avatar-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--amber-pale);
+      color: #9a6200;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .avatar-ig:hover { background: #fde68a; }
+
+    /* ─── SKILLS ─── */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 56px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      letter-spacing: -1px;
+      color: var(--ink);
+      margin-bottom: 36px;
+    }
+    .section-title em { font-style: italic; color: var(--amber); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+    }
+
+    .skill-chip {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
       display: flex;
       flex-direction: column;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .skill-chip:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(26,23,20,0.08);
+    }
+
+    .skill-chip .s-icon {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: var(--amber-pale);
+      border-radius: 6px;
+      padding: 4px 8px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .skill-chip .s-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+    .skill-chip .s-level {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 100px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .level-mastered { background: #d1fae5; color: #065f46; }
+    .level-learning { background: #fff3d6; color: #92400e; }
+
+    /* ─── PROJECTS ─── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 48px rgba(26,23,20,0.1);
+    }
+
+    .project-thumb {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
       overflow: hidden;
     }
 
-    .game-card::before {
+    .project-thumb::before,
+    .project-thumb::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      border-radius: 28px 28px 0 0;
+      border-radius: 50%;
     }
 
-    .game-card:nth-child(1)::before { background: linear-gradient(90deg, var(--amber), var(--coral)); }
-    .game-card:nth-child(2)::before { background: linear-gradient(90deg, var(--teal), #06b6d4); }
-    .game-card:nth-child(3)::before { background: linear-gradient(90deg, var(--violet), #ec4899); }
-    .game-card:nth-child(4)::before { background: linear-gradient(90deg, var(--coral), var(--amber)); }
+    .thumb-1 { background: linear-gradient(135deg, #fff3d6, #fde68a); }
+    .thumb-1::before { width: 120px; height: 120px; background: #f0a50030; top: -30px; right: -20px; }
+    .thumb-1::after  { width: 80px;  height: 80px;  background: #f0a50020; bottom: -20px; left: 20px; }
 
-    .game-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-med);
+    .thumb-2 { background: linear-gradient(135deg, #d6f5f3, #a7f3d0); }
+    .thumb-2::before { width: 140px; height: 140px; background: #0ea5a020; top: -40px; left: -30px; }
+    .thumb-2::after  { width: 60px;  height: 60px;  background: #0ea5a030; bottom: 10px; right: 30px; }
+
+    .thumb-3 { background: linear-gradient(135deg, #fde8e8, #fecaca); }
+    .thumb-3::before { width: 100px; height: 100px; background: #f0606025; bottom: -20px; right: -10px; }
+    .thumb-3::after  { width: 70px;  height: 70px;  background: #f0606015; top: 10px; left: 40px; }
+
+    .thumb-label {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      letter-spacing: -0.3px;
+      color: rgba(26,23,20,0.4);
+      position: relative;
+      z-index: 1;
     }
 
-    .game-title {
+    .project-body { padding: 22px 20px; }
+
+    .project-tags {
       display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'Syne', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--ink);
-      margin-bottom: 22px;
-      padding-bottom: 16px;
-      border-bottom: 1.5px solid var(--border);
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
     }
 
-    .game-title .icon {
-      font-size: 1.5rem;
-      background: var(--sand);
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .game-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    /* ── INPUTS ── */
-    input[type="number"] {
-      background: var(--sand);
-      border: 2px solid var(--border);
-      border-radius: 14px;
-      padding: 13px 16px;
-      color: var(--ink);
-      font-size: 1.2rem;
-      font-family: 'Syne', sans-serif;
+    .tag {
+      font-size: 0.7rem;
       font-weight: 600;
-      text-align: center;
-      width: 100%;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      outline: none;
-    }
-
-    input[type="number"]:focus {
-      border-color: var(--amber);
-      box-shadow: 0 0 0 4px #fde68a60;
-    }
-
-    input::placeholder { color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 300; }
-
-    .range-badge {
-      background: var(--sand);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 3px 9px;
       border-radius: 100px;
-      padding: 5px 14px;
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.05em;
     }
 
-    /* ── BUTTONS ── */
-    .btn {
-      border: 2px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 20px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      background: var(--sand);
-      color: var(--ink-light);
-      transition: all 0.15s ease;
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    .project-name {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.3rem;
+      color: var(--ink);
+      margin-bottom: 8px;
     }
 
-    .btn:hover { background: var(--border); border-color: #d0c9be; }
-    .btn:active { transform: scale(0.97); }
-
-    .btn-primary {
-      background: var(--amber);
-      border-color: var(--amber-dark);
-      color: #451a03;
-      font-weight: 700;
-      flex: 1;
-      box-shadow: 0 3px 12px #f59e0b40;
-    }
-
-    .btn-primary:hover { background: var(--amber-dark); border-color: #92400e; color: white; }
-
-    .btn-row { display: flex; gap: 10px; }
-
-    /* ── RESULT BOX ── */
-    .result-box {
-      background: var(--sand);
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-weight: 600;
-      font-size: 1.05rem;
-      text-align: center;
-      color: var(--ink-light);
-      border: 1.5px solid var(--border);
-      transition: all 0.2s ease;
-    }
-
-    .result-box.win {
-      background: #d1fae5;
-      border-color: #6ee7b7;
-      color: #065f46;
-    }
-
-    .result-box.lose {
-      background: #fee2e2;
-      border-color: #fca5a5;
-      color: #7f1d1d;
-    }
-
-    .result-box.tie {
-      background: #e0f2fe;
-      border-color: #7dd3fc;
-      color: #0c4a6e;
-    }
-
-    /* ── DICE ── */
-    .dice-display {
-      font-size: 4.5rem;
-      text-align: center;
-      background: var(--sand);
-      border-radius: 20px;
-      padding: 12px;
-      border: 1.5px solid var(--border);
-      line-height: 1.3;
-      transition: transform 0.15s ease;
-    }
-
-    .dice-display.rolling {
-      animation: diceShake 0.4s ease;
-    }
-
-    @keyframes diceShake {
-      0%, 100% { transform: rotate(0deg) scale(1); }
-      20% { transform: rotate(-10deg) scale(1.1); }
-      50% { transform: rotate(8deg) scale(1.15); }
-      80% { transform: rotate(-5deg) scale(1.05); }
-    }
-
-    /* ── SUIT ── */
-    .suit-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .suit-btn {
-      flex: 1;
-      background: var(--sand);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 14px 0;
-      font-size: 2rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .suit-btn:hover { background: var(--amber-light); border-color: var(--amber); transform: scale(1.05); }
-    .suit-btn:active { transform: scale(0.95); }
-
-    .suit-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--sand);
-      border-radius: 14px;
-      padding: 12px 16px;
-      border: 1.5px solid var(--border);
-      font-size: 0.9rem;
-      color: var(--ink-light);
-      font-weight: 500;
-    }
-
-    .suit-info strong { font-family: 'Syne', sans-serif; font-size: 1rem; }
-
-    /* ── COIN ── */
-    .coin-display {
-      font-size: 3.5rem;
-      text-align: center;
-      background: var(--sand);
-      border-radius: 20px;
-      padding: 14px;
-      border: 1.5px solid var(--border);
-      transition: transform 0.1s;
-    }
-
-    .coin-display.flip-anim {
-      animation: coinFlip 0.5s ease;
-    }
-
-    @keyframes coinFlip {
-      0% { transform: scaleY(1); }
-      25% { transform: scaleY(0.05); }
-      50% { transform: scaleY(1); }
-      75% { transform: scaleY(0.05); }
-      100% { transform: scaleY(1); }
-    }
-
-    .coin-guess-row { display: flex; gap: 8px; }
-    .coin-guess-row .btn { flex: 1; }
-
-    /* ── HISTORY ── */
-    .history-text {
-      font-size: 0.82rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── FOOTER ── */
-    .footer {
-      text-align: center;
-      color: var(--muted);
+    .project-desc {
       font-size: 0.85rem;
-      border-top: 1.5px solid var(--border);
-      padding-top: 24px;
+      color: var(--muted);
+      line-height: 1.65;
       font-weight: 300;
+    }
+
+    /* ─── CONTACT ─── */
+    .contact-section {
+      background: var(--ink);
+      padding: 80px 56px;
+      text-align: center;
+    }
+
+    .contact-section .section-label { color: #ffffff50; }
+
+    .contact-section h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: -1.5px;
+      color: white;
+      margin-bottom: 14px;
+      line-height: 1.1;
+    }
+
+    .contact-section h2 em { font-style: italic; color: var(--amber); }
+
+    .contact-section p {
+      font-size: 1rem;
+      color: #ffffff70;
+      font-weight: 300;
+      margin-bottom: 36px;
+      max-width: 400px;
+      margin-left: auto; margin-right: auto;
+      line-height: 1.7;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      background: #ffffff12;
+      border: 1.5px solid #ffffff20;
+      color: white;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .contact-link:hover { background: var(--amber); color: var(--ink); border-color: var(--amber); transform: scale(1.03); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg);
+    }
+
+    .footer-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.1rem;
+      color: var(--ink);
+    }
+    .footer-logo span { color: var(--amber); }
+    footer p { font-size: 0.8rem; color: var(--muted); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 860px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 64px 24px 48px; }
+      .hero-right { display: flex; justify-content: center; }
+      .section { padding: 48px 24px; }
+      .contact-section { padding: 64px 24px; }
+      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="brand">
-      <div class="brand-tag">🎰 Game Random Hub</div>
-      <h1>repal<span class="dot">.</span>me</h1>
-      <p>4 game acak · 1 halaman · mainkan sepuasnya</p>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">revalino<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#about">Tentang</a></li>
+      <li><a href="#skills">Skill</a></li>
+      <li><a href="#projects">Proyek</a></li>
+      <li><a href="#contact" class="nav-cta">Hubungi Saya</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="about">
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Mahasiswa PENS · Game Developer
+        </div>
+        <h1>Revalino<br><em>Firdaus.</em></h1>
+        <p class="hero-role">Game Developer · Web Developer · Creative Maker</p>
+        <p class="hero-desc">
+          Mahasiswa <strong>Politeknik Elektronika Negeri Surabaya</strong> yang passionate di dunia game development. Saat ini sedang mendalami <strong>Unity</strong> sambil membangun proyek-proyek digital yang kreatif dan bermakna.
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn-main">Lihat Karya Saya →</a>
+          <a href="#contact" class="btn-ghost">Hubungi Saya</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="avatar-card">
+          <div class="avatar">RF</div>
+          <div class="avatar-name">Revalino Firdaus</div>
+          <div class="avatar-school">PENS · Surabaya</div>
+          <a href="https://instagram.com/repal.co" target="_blank" class="avatar-ig">
+            @repal.co
+          </a>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="game-grid">
+  <hr class="divider">
 
-      <!-- GAME 1: TEBAK ANGKA -->
-      <div class="game-card">
-        <div class="game-title">
-          <div class="icon">🔢</div>
-          Tebak Angka
-        </div>
-        <div class="game-content">
-          <div class="range-badge">Rentang angka: 1 — 100</div>
-          <input type="number" id="guessInput" min="1" max="100" placeholder="Masukkan tebakanmu...">
-          <div class="btn-row">
-            <button class="btn btn-primary" id="guessBtn">🔮 Tebak</button>
-            <button class="btn" id="newGameBtn">🔄 Baru</button>
-          </div>
-          <div class="result-box" id="guessFeedback">🤔 Masukkan angka 1–100</div>
-          <div class="history-text">Riwayat: <span id="historyGuess">(kosong)</span></div>
-        </div>
+  <!-- SKILLS -->
+  <section class="section" id="skills">
+    <div class="section-label">Keahlian</div>
+    <div class="section-title">Yang saya <em>kuasai</em> &<br>sedang dipelajari</div>
+    <div class="skills-grid">
+      <div class="skill-chip">
+        <div class="s-icon">HTML</div>
+        <div class="s-name">HTML</div>
+        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-
-      <!-- GAME 2: LEMPAR DADU -->
-      <div class="game-card">
-        <div class="game-title">
-          <div class="icon">🎲</div>
-          Lempar Dadu
-        </div>
-        <div class="game-content">
-          <div class="dice-display" id="diceValue">⚀</div>
-          <button class="btn btn-primary" id="rollDiceBtn">🔄 Lempar Dadu</button>
-          <div class="result-box" id="diceResult">Klik untuk melempar dadu</div>
-        </div>
+      <div class="skill-chip">
+        <div class="s-icon">CSS</div>
+        <div class="s-name">CSS</div>
+        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-
-      <!-- GAME 3: SUIT -->
-      <div class="game-card">
-        <div class="game-title">
-          <div class="icon">✂️</div>
-          Suit vs Komputer
-        </div>
-        <div class="game-content">
-          <div class="suit-buttons">
-            <button class="suit-btn" id="suitBatu" title="Batu">🪨</button>
-            <button class="suit-btn" id="suitGunting" title="Gunting">✂️</button>
-            <button class="suit-btn" id="suitKertas" title="Kertas">📄</button>
-          </div>
-          <div class="result-box" id="suitResult">Pilih batu, gunting, atau kertas</div>
-          <div class="suit-info">
-            <span>Komputer: <strong id="suitComp">❓</strong></span>
-            <span>Skor: <strong id="suitScore">0 – 0</strong></span>
-          </div>
-        </div>
+      <div class="skill-chip">
+        <div class="s-icon">JS</div>
+        <div class="s-name">JavaScript</div>
+        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-
-      <!-- GAME 4: TEBAK KOIN -->
-      <div class="game-card">
-        <div class="game-title">
-          <div class="icon">🪙</div>
-          Tebak Koin
-        </div>
-        <div class="game-content">
-          <div class="coin-display" id="coinSide">🪙</div>
-          <button class="btn btn-primary" id="coinFlip">🎲 Lempar Koin</button>
-          <div class="coin-guess-row">
-            <button class="btn" id="coinGambar">👑 Gambar</button>
-            <button class="btn" id="coinAngka">🔢 Angka</button>
-          </div>
-          <div class="result-box" id="coinResult">Lempar dulu, lalu tebak!</div>
-        </div>
+      <div class="skill-chip">
+        <div class="s-icon">Node</div>
+        <div class="s-name">Node.js</div>
+        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-
+      <div class="skill-chip">
+        <div class="s-icon">PHP</div>
+        <div class="s-name">PHP</div>
+        <span class="s-level level-mastered">Dikuasai</span>
+      </div>
+      <div class="skill-chip">
+        <div class="s-icon">TW</div>
+        <div class="s-name">Tailwind CSS</div>
+        <span class="s-level level-mastered">Dikuasai</span>
+      </div>
+      <div class="skill-chip">
+        <div class="s-icon">CVA</div>
+        <div class="s-name">Canva</div>
+        <span class="s-level level-mastered">Dikuasai</span>
+      </div>
+      <div class="skill-chip">
+        <div class="s-icon">Unity</div>
+        <div class="s-name">Unity</div>
+        <span class="s-level level-learning">Dipelajari</span>
+      </div>
     </div>
+  </section>
 
-    <div class="footer">
-      © 2026 repal.me · semua hasil benar‑benar acak
+  <hr class="divider">
+
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <div class="section-label">Proyek</div>
+    <div class="section-title">Beberapa hal yang<br>pernah saya <em>buat</em></div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-thumb thumb-1"><span class="thumb-label">repal.me</span></div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+          </div>
+          <div class="project-name">repal.me Game Hub</div>
+          <p class="project-desc">4 game acak dalam satu halaman — tebak angka, lempar dadu, suit, dan tebak koin. Dibangun murni dengan vanilla JS.</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-thumb thumb-2"><span class="thumb-label">Web App</span></div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">PHP</span>
+          </div>
+          <div class="project-name">Web App Project</div>
+          <p class="project-desc">Proyek web fullstack menggunakan Node.js di sisi server dan PHP untuk backend — part dari pengerjaan tugas kuliah di PENS.</p>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-thumb thumb-3"><span class="thumb-label">Unity WIP</span></div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="tag">Unity</span>
+            <span class="tag">C#</span>
+            <span class="tag">In Progress</span>
+          </div>
+          <div class="project-name">Unity Game (WIP)</div>
+          <p class="project-desc">Game pertama yang sedang dikembangkan di Unity. Masih dalam tahap eksplorasi dan pembelajaran engine.</p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <script>
-  (function () {
-    // ---------- GAME 1: Tebak Angka ----------
-    let secretNumber = Math.floor(Math.random() * 100) + 1;
-    let guessHistory = [];
-    let gameWon = false;
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="section-label">Kontak</div>
+    <h2>Mari <em>berkolaborasi</em><br>bersama!</h2>
+    <p>Punya ide proyek, pertanyaan, atau sekadar ingin ngobrol soal game dev? Jangan ragu untuk menghubungi saya.</p>
+    <div class="contact-links">
+      <a href="https://instagram.com/repal.co" target="_blank" class="contact-link">
+        Instagram — @repal.co
+      </a>
+      <a href="mailto:revalinofirdaus@gt.students.pens.ac.id" class="contact-link">
+        Email Saya
+      </a>
+    </div>
+  </section>
 
-    const guessInput = document.getElementById('guessInput');
-    const guessBtn = document.getElementById('guessBtn');
-    const newGameBtn = document.getElementById('newGameBtn');
-    const guessFeedback = document.getElementById('guessFeedback');
-    const historyGuess = document.getElementById('historyGuess');
-
-    function updateGuessUI() {
-      guessFeedback.className = 'result-box';
-      if (gameWon) {
-        guessFeedback.innerText = '🎉 SELAMAT! Angkamu benar!';
-        guessFeedback.classList.add('win');
-        guessBtn.disabled = true;
-        guessInput.disabled = true;
-      } else {
-        guessBtn.disabled = false;
-        guessInput.disabled = false;
-      }
-      historyGuess.innerText = guessHistory.length === 0
-        ? '(kosong)'
-        : guessHistory.map(g => g.value + (g.result === 'benar' ? '✅' : g.result === 'tinggi' ? '🔺' : '🔻')).join('  ');
-    }
-
-    guessBtn.addEventListener('click', function () {
-      if (gameWon) return;
-      const val = parseInt(guessInput.value);
-      if (isNaN(val) || val < 1 || val > 100) {
-        guessFeedback.className = 'result-box lose';
-        guessFeedback.innerText = '⚠️ Masukkan angka antara 1 hingga 100!';
-        return;
-      }
-      let result = '';
-      guessFeedback.className = 'result-box';
-      if (val === secretNumber) {
-        result = 'benar'; gameWon = true;
-        guessFeedback.classList.add('win');
-        guessFeedback.innerText = '🎉 SELAMAT! Angkamu benar!';
-      } else if (val > secretNumber) {
-        result = 'tinggi';
-        guessFeedback.classList.add('lose');
-        guessFeedback.innerText = '🔺 Terlalu tinggi! Coba lebih kecil.';
-      } else {
-        result = 'rendah';
-        guessFeedback.classList.add('tie');
-        guessFeedback.innerText = '🔻 Terlalu rendah! Coba lebih besar.';
-      }
-      guessHistory.push({ value: val, result });
-      updateGuessUI();
-      guessInput.value = '';
-    });
-
-    newGameBtn.addEventListener('click', function () {
-      secretNumber = Math.floor(Math.random() * 100) + 1;
-      guessHistory = []; gameWon = false;
-      guessFeedback.className = 'result-box';
-      guessFeedback.innerText = '🔄 Angka baru telah dipilih!';
-      guessBtn.disabled = false;
-      guessInput.disabled = false;
-      historyGuess.innerText = '(kosong)';
-    });
-
-    guessInput.addEventListener('keypress', e => { if (e.key === 'Enter') guessBtn.click(); });
-
-    // ---------- GAME 2: Dadu ----------
-    const diceValue = document.getElementById('diceValue');
-    const diceResult = document.getElementById('diceResult');
-    const rollDiceBtn = document.getElementById('rollDiceBtn');
-    const diceIcons = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
-
-    rollDiceBtn.addEventListener('click', function () {
-      diceValue.classList.add('rolling');
-      setTimeout(() => diceValue.classList.remove('rolling'), 400);
-      const roll = Math.floor(Math.random() * 6) + 1;
-      diceValue.innerText = diceIcons[roll - 1];
-      diceResult.className = 'result-box';
-      diceResult.innerText = `Hasil: ${roll}  (${diceIcons[roll - 1]})`;
-    });
-
-    // ---------- GAME 3: Suit ----------
-    const suitResult = document.getElementById('suitResult');
-    const suitComp = document.getElementById('suitComp');
-    const suitScore = document.getElementById('suitScore');
-    let playerScore = 0, compScore = 0;
-
-    function suitGame(playerChoice) {
-      const choices = ['batu', 'gunting', 'kertas'];
-      const compChoice = choices[Math.floor(Math.random() * 3)];
-      const icons = { batu: '🪨', gunting: '✂️', kertas: '📄' };
-      suitComp.innerText = icons[compChoice];
-      suitResult.className = 'result-box';
-      if (playerChoice === compChoice) {
-        suitResult.classList.add('tie');
-        suitResult.innerText = '🤝 Seri!';
-      } else if (
-        (playerChoice === 'batu' && compChoice === 'gunting') ||
-        (playerChoice === 'gunting' && compChoice === 'kertas') ||
-        (playerChoice === 'kertas' && compChoice === 'batu')
-      ) {
-        suitResult.classList.add('win');
-        suitResult.innerText = '✅ Kamu menang!';
-        playerScore++;
-      } else {
-        suitResult.classList.add('lose');
-        suitResult.innerText = '❌ Komputer menang';
-        compScore++;
-      }
-      suitScore.innerText = `${playerScore} – ${compScore}`;
-    }
-
-    document.getElementById('suitBatu').addEventListener('click', () => suitGame('batu'));
-    document.getElementById('suitGunting').addEventListener('click', () => suitGame('gunting'));
-    document.getElementById('suitKertas').addEventListener('click', () => suitGame('kertas'));
-
-    // ---------- GAME 4: Koin ----------
-    const coinSide = document.getElementById('coinSide');
-    const coinResult = document.getElementById('coinResult');
-    let currentCoinResult = '';
-
-    document.getElementById('coinFlip').addEventListener('click', function () {
-      coinSide.classList.add('flip-anim');
-      setTimeout(() => coinSide.classList.remove('flip-anim'), 500);
-      currentCoinResult = Math.random() < 0.5 ? 'gambar' : 'angka';
-      coinSide.innerText = currentCoinResult === 'gambar' ? '👑' : '🔢';
-      coinResult.className = 'result-box';
-      coinResult.innerText = `Muncul: ${currentCoinResult === 'gambar' ? 'Gambar 👑' : 'Angka 🔢'}`;
-    });
-
-    document.getElementById('coinGambar').addEventListener('click', function () {
-      if (!currentCoinResult) { coinResult.innerText = '⚠️ Lempar koin dulu!'; return; }
-      coinResult.className = 'result-box ' + (currentCoinResult === 'gambar' ? 'win' : 'lose');
-      coinResult.innerText = currentCoinResult === 'gambar' ? '✅ Benar! Gambar 👑' : '❌ Salah, muncul Angka 🔢';
-    });
-
-    document.getElementById('coinAngka').addEventListener('click', function () {
-      if (!currentCoinResult) { coinResult.innerText = '⚠️ Lempar koin dulu!'; return; }
-      coinResult.className = 'result-box ' + (currentCoinResult === 'angka' ? 'win' : 'lose');
-      coinResult.innerText = currentCoinResult === 'angka' ? '✅ Benar! Angka 🔢' : '❌ Salah, muncul Gambar 👑';
-    });
-
-  })();
-  </script>
-</body>
-</html>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">revalino<span>.</span></div>
+    <p>© 2026 Revalino Firdaus · PENS · Dibuat dengan sepenuh hati</p>
