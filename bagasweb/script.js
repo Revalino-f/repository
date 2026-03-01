@@ -1,4 +1,4 @@
-// Data materi & kuis dengan link
+// ===== DATA AWAL =====
 let materiData = [
     { judul: "Teks Narasi", deskripsi: "Struktur, ciri, dan contoh.", linkMateri: "https://example.com/narasi", linkFile: "https://example.com/narasi.pdf" },
     { judul: "Teks Deskripsi", deskripsi: "Memahami teks deskripsi.", linkMateri: "https://example.com/deskripsi", linkFile: "" },
@@ -10,30 +10,35 @@ let kuisData = [
     { judul: "Kuis Deskripsi", deskripsi: "Latihan soal deskripsi.", linkMateri: "", linkFile: "https://example.com/kuis-deskripsi.pdf" }
 ];
 
+let videoData = [
+    { judul: "Pengantar Teks Narasi", url: "https://www.youtube.com/embed/dQw4w9WgXcQ", deskripsi: "Video penjelasan teks narasi" },
+    { judul: "Contoh Teks Deskripsi", url: "https://www.youtube.com/embed/3JZ_D3ELwOQ", deskripsi: "Contoh dan analisis" }
+];
+
 let isAdmin = false;
 
-// Elemen DOM
+// ===== ELEMEN DOM =====
 const materiContainer = document.getElementById('materiContainer');
 const kuisContainer = document.getElementById('kuisContainer');
+const videoContainer = document.getElementById('videoContainer');
 const loginModal = document.getElementById('loginModal');
 const adminPanel = document.getElementById('adminPanel');
 const loginBtn = document.getElementById('adminLoginBtn');
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('navMenu');
 
-// Toggle hamburger menu
+// ===== HAMBURGER MENU =====
 hamburger.addEventListener('click', () => {
     navMenu.classList.toggle('active');
 });
 
-// Tutup menu ketika link diklik (untuk mobile)
 document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', () => {
         navMenu.classList.remove('active');
     });
 });
 
-// Helper: render link buttons
+// ===== RENDER FUNCTIONS =====
 function renderLinkButtons(item) {
     let html = '<div class="card-links">';
     if (item.linkMateri && item.linkMateri.trim() !== '') {
@@ -74,7 +79,21 @@ function renderKuis() {
     kuisContainer.innerHTML = html;
 }
 
-// Fungsi tambah dengan link
+function renderVideo() {
+    let html = '';
+    videoData.forEach((item, index) => {
+        html += `
+        <div class="video-card">
+            <h3>${item.judul}</h3>
+            <iframe src="${item.url}" frameborder="0" allowfullscreen></iframe>
+            <p>${item.deskripsi || ''}</p>
+            ${isAdmin ? `<button class="btn hapus-btn" onclick="hapusVideo(${index})">Hapus</button>` : ''}
+        </div>`;
+    });
+    videoContainer.innerHTML = html;
+}
+
+// ===== FUNGSI TAMBAH (MATERI, KUIS, VIDEO) =====
 function tambahMateri() {
     const judul = document.getElementById('judulMateri').value.trim();
     const deskripsi = document.getElementById('deskripsiMateri').value.trim();
@@ -83,7 +102,7 @@ function tambahMateri() {
     if (!judul || !deskripsi) return alert('Judul dan deskripsi wajib diisi');
     materiData.push({ judul, deskripsi, linkMateri, linkFile });
     renderMateri();
-    // reset form
+    // reset
     document.getElementById('judulMateri').value = '';
     document.getElementById('deskripsiMateri').value = '';
     document.getElementById('linkMateri').value = '';
@@ -104,6 +123,24 @@ function tambahKuis() {
     document.getElementById('fileKuis').value = '';
 }
 
+function tambahVideo() {
+    const judul = document.getElementById('judulVideo').value.trim();
+    const url = document.getElementById('urlVideo').value.trim();
+    const deskripsi = document.getElementById('deskripsiVideo').value.trim();
+    if (!judul || !url) return alert('Judul dan URL wajib diisi');
+    // Validasi sederhana: pastikan URL mengandung embed (opsional)
+    if (!url.includes('embed') && !url.includes('youtube.com')) {
+        alert('Harap masukkan URL embed YouTube yang valid (contoh: https://www.youtube.com/embed/...)');
+        // tetap lanjut? terserah, tapi beri peringatan
+    }
+    videoData.push({ judul, url, deskripsi });
+    renderVideo();
+    document.getElementById('judulVideo').value = '';
+    document.getElementById('urlVideo').value = '';
+    document.getElementById('deskripsiVideo').value = '';
+}
+
+// ===== FUNGSI HAPUS =====
 function hapusMateri(index) {
     if (confirm('Hapus materi ini?')) {
         materiData.splice(index, 1);
@@ -118,7 +155,14 @@ function hapusKuis(index) {
     }
 }
 
-// Login / logout
+function hapusVideo(index) {
+    if (confirm('Hapus video ini?')) {
+        videoData.splice(index, 1);
+        renderVideo();
+    }
+}
+
+// ===== LOGIN / LOGOUT =====
 function openLogin() {
     loginModal.style.display = 'flex';
 }
@@ -129,6 +173,7 @@ function login() {
     adminPanel.style.display = 'block';
     renderMateri();
     renderKuis();
+    renderVideo();
 }
 
 function logout() {
@@ -136,6 +181,7 @@ function logout() {
     adminPanel.style.display = 'none';
     renderMateri();
     renderKuis();
+    renderVideo();
 }
 
 function toggleAdminPanel() {
@@ -146,7 +192,7 @@ function toggleAdminPanel() {
     }
 }
 
-// Event listeners
+// ===== EVENT LISTENERS =====
 loginBtn.addEventListener('click', function() {
     if (isAdmin) {
         toggleAdminPanel();
@@ -178,6 +224,7 @@ document.querySelectorAll('nav a').forEach(anchor => {
     });
 });
 
-// Render awal
+// ===== RENDER AWAL =====
 renderMateri();
 renderKuis();
+renderVideo();
