@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teksia Premium · Materi + Link</title>
-    <!-- Font Poppins -->
+    <title>Teksia Premium · Materi + Kuis + Video</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- CSS Eksternal -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navbar dengan hamburger -->
+    <!-- Navbar -->
     <nav>
         <div class="logo">Teksia</div>
         <ul class="nav-menu" id="navMenu">
@@ -48,12 +46,10 @@
         <div class="materi-container" id="kuisContainer"></div>
     </section>
 
-    <!-- Video -->
+    <!-- Video (akan diisi JS) -->
     <section id="video">
         <h2>Video Pembelajaran</h2>
-        <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video Pembelajaran" allowfullscreen></iframe>
-        </div>
+        <div class="video-container" id="videoContainer"></div>
     </section>
 
     <!-- Tentang -->
@@ -76,7 +72,7 @@
 
     <!-- Footer -->
     <footer>
-        © 2026 Teksia - Platform Pembelajaran Bahasa Indonesia. All rights reserved.
+        © 2026 Teksia Premium · Startup UI
     </footer>
 
     <!-- Modal Login -->
@@ -90,7 +86,7 @@
         </div>
     </div>
 
-    <!-- Floating Admin Panel -->
+    <!-- Floating Admin Panel (dengan form video) -->
     <div class="admin-panel" id="adminPanel">
         <div class="panel-header">
             <h2>Panel Admin</h2>
@@ -98,8 +94,9 @@
                 <button onclick="toggleAdminPanel()" title="Tutup panel">✕</button>
             </div>
         </div>
-        <p style="margin-bottom:10px;">Tambah materi/kuis dengan link.</p>
+        <p style="margin-bottom:10px;">Tambah materi, kuis, atau video.</p>
         
+        <!-- Form Materi -->
         <h3>➕ Tambah Materi</h3>
         <input type="text" id="judulMateri" placeholder="Judul materi">
         <textarea id="deskripsiMateri" placeholder="Deskripsi materi" rows="2"></textarea>
@@ -107,6 +104,7 @@
         <input type="url" id="fileMateri" placeholder="URL File pendukung (opsional)">
         <button class="btn" onclick="tambahMateri()">Tambah Materi</button>
 
+        <!-- Form Kuis -->
         <h3>➕ Tambah Kuis</h3>
         <input type="text" id="judulKuis" placeholder="Judul kuis">
         <textarea id="deskripsiKuis" placeholder="Deskripsi kuis" rows="2"></textarea>
@@ -114,13 +112,19 @@
         <input type="url" id="fileKuis" placeholder="URL File pendukung (opsional)">
         <button class="btn" onclick="tambahKuis()">Tambah Kuis</button>
 
+        <!-- Form Video -->
+        <h3>➕ Tambah Video</h3>
+        <input type="text" id="judulVideo" placeholder="Judul video">
+        <input type="url" id="urlVideo" placeholder="URL Embed YouTube (https://www.youtube.com/embed/...)" >
+        <textarea id="deskripsiVideo" placeholder="Deskripsi video (opsional)" rows="2"></textarea>
+        <button class="btn" onclick="tambahVideo()">Tambah Video</button>
+
         <div style="display: flex; gap:10px; margin-top:20px;">
             <button class="btn logout-btn" onclick="logout()">Logout</button>
             <button class="btn" onclick="toggleAdminPanel()">Tutup</button>
         </div>
     </div>
 
-    <!-- JavaScript Eksternal -->
     <script src="script.js"></script>
 </body>
 </html>
