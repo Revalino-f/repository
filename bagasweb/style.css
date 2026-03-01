@@ -214,20 +214,43 @@ section h2::after {
     background: #d32f2f;
 }
 
-/* ===== VIDEO ===== */
-.video-wrapper {
-    margin-top: 30px;
+/* ===== VIDEO SECTION ===== */
+.video-container {
     display: flex;
-    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 20px;
 }
 
-iframe {
-    width: 100%;
-    max-width: auto;
-    height: 400px;
+.video-card {
+    background: white;
+    padding: 20px;
+    width: 350px;
     border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.video-card h3 {
+    color: #ff7a00;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.video-card iframe {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    margin: 10px 0;
     border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.video-card p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 /* ===== CARD BIASA ===== */
@@ -416,7 +439,7 @@ footer {
     .hero {
         padding-top: 180px;
     }
-    .materi-card {
+    .materi-card, .video-card {
         width: 100%;
     }
 }
