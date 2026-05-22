@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Dayuuu! 🎂</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+    background:#ffe5ec; /* background gede jadi pink muda */
+    height:100vh;
+    overflow-x:hidden;
+    overflow-y:visible;
+    position:relative;
+}
+body::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+    opacity:0.04;
+    pointer-events:none;
+}
+
+/* stars background */
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:#ff7096; /* bintang pink */
+    border-radius:50%;
+    opacity:0.5;
+    animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle{from{opacity:0.3;}to{opacity:0.8;}}
+
+/* container & slides */
+.container{
+    display:flex;
+    height:100vh;
+    transition:1s ease;
+    position:relative;
+}
+.slide{
+    min-width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    padding:20px;
+    position:relative;
+}
+
+/* ===== ENVELOPE ===== */
+.envelope{
+    width:260px;
+    height:160px;
+    position:relative;
+    cursor:pointer;
+    perspective:1000px;
+    margin-bottom:20px;
+}
+.env-body{
+    width:100%;
+    height:100%;
+    background:#ffffff; /* PUTIH */
+    border-radius:10px;
+    position:absolute;
+    bottom:0;
+    box-shadow:0 10px 25px rgba(255,112,150,0.25);
+    border:4px solid #ff7096; /* frame pinggir pink */
+}
+.env-flap{
+    width:100%;
+    height:100%;
+    background:#ffe5ec; /* pink muda flap */
+    position:absolute;
+    top:0;
+    clip-path:polygon(0 0,100% 0,50% 65%);
+    transform-origin:top;
+    transition:0.8s;
+    border-top:4px solid #ff7096; /* frame atas pink */
+}
+.envelope.open .env-flap{transform:rotateX(180deg);}
+.letter{
+    position:absolute;
+    width:90%;
+    height:75%;
+    background:#ffffff; /* PUTIH */
+    top:15%;
+    left:5%;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:15px;
+    font-size:14px;
+    color:#ff477e; /* text jadi pink tua */
+    transform:translateY(20px);
+    opacity:0;
+    transition:0.6s;
+}
+.envelope.open .letter{
+    transform:translateY(0); opacity:1;
+}
+.envelope-title{
+    margin-bottom:20px;
+    font-size:16px;
+    color:#ff477e; /* title pink */
+    letter-spacing:1px;
+    font-weight: bold;
+}
+
+/* postcard */
+.postcard{
+    background:#ffffff; /* PUTIH background */
+    max-width:420px;
+    width:100%;
+    padding:30px;
+    border-radius:20px;
+    border:12px solid transparent;
+    border-image: repeating-linear-gradient(
+        45deg,
+        #ff7096 0 15px, /* strip pink */
+        #ffffff 15px 30px /* strip PUTIH */
+    ) 20;
+    box-shadow:0 15px 40px rgba(255,112,150,0.2);
+    text-align:center;
+}
+h1{
+    font-family:'Playfair Display',serif;
+    color:#ff477e; /* text pink tua */
+    margin-bottom:15px;
+}
+.message{
+    font-size:14px;
+    color:#4f5d75; /* text abu gelap biar kebaca */
+    line-height:1.8;
+}
+
+#typing-text{min-height:50px;}
+
+/* vinyl */
+.vinyl{
+    width:200px;
+    height:200px;
+    background:#ff85a1;
+    border-radius:50%;
+    position:relative;
+    margin:20px auto;
+    animation:spin 4s linear infinite;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.vinyl img{
+    position:absolute;
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    object-fit:cover;
+}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* photo */
+.photo-simple{
+    width:180px;
+    border-radius:12px;
+    box-shadow:0 10px 25px rgba(255,112,150,0.25);
+    margin-bottom:15px;
+    border: 5px solid #fff;
+}
+
+/* cake */
+.cake{
+    width:140px;
+    height:90px;
+    background:#ff85a1;
+    border-radius:12px 12px 25px 25px;
+    margin:40px auto 20px auto;
+    position:relative;
+    border: 3px solid #fff;
+}
+.candle{
+    width:14px;
+    height:55px;
+    background:#ffffff;
+    position:absolute;
+    top:-28px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:4px;
+    border: 1px solid #ff85a1;
+}
+.flame{
+    width:16px;
+    height:16px;
+    background:#ffd166;
+    border-radius:50%;
+    position:absolute;
+    top:-16px;
+    left:50%;
+    transform:translateX(-50%);
+    animation:flicker .3s infinite alternate;
+    cursor:pointer;
+    box-shadow:0 0 12px rgba(255,209,102,0.8);
+}
+@keyframes flicker{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.15)}}
+
+/* confetti */
+.confetti{
+    position:fixed;
+    width:10px;
+    height:14px;
+    opacity:0.9;
+    z-index:99999;
+    top:0;
+    animation:confettiFall 3s linear forwards;
+}
+@keyframes confettiFall{
+    0%{transform:translateY(-50px) rotate(0deg); opacity:1;}
+    100%{transform:translateY(110vh) rotate(720deg); opacity:0;}
+}
+
+/* memory stars */
+.stars-container{display:flex; justify-content:center; gap:25px; margin:25px 0;}
+.memory-star{
+    font-size:42px;
+    cursor:pointer;
+    color:#fbb1bd; /* pink soft */
+    transition:0.3s;
+}
+.memory-star:hover{transform:scale(1.2); color:#ff477e;}
+.memory-text{font-size:14px; color:#4f5d75; min-height:30px; font-weight: 500;}
+
+/* final letter */
+.final-letter{
+    font-size:15px;
+    color:#4f5d75;
+    line-height:1.8;
+    animation:fadeInLetter 2s ease forwards;
+    opacity:0;
+}
+@keyframes fadeInLetter{to{opacity:1;}}
+
+/* buttons */
+button{
+    padding:10px 22px;
+    border:none;
+    border-radius:25px;
+    background:#ff477e; /* pink tombol */
+    color:#ffffff; /* putih */
+    cursor:pointer;
+    margin-top:15px;
+    transition:0.3s;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(255,71,126,0.3);
+}
+button:hover{
+    background:#ff7096;
+    transform: translateY(-2px);
+}
+.slide button.next-btn{
+    position:relative;
+    margin-top:20px;
+}
+
+/* stack tombol vertikal */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* responsive */
+@media(max-width:480px){
+    .postcard{padding:20px;}
+    .envelope{width:200px;height:130px;}
+    .cake{width:120px;height:80px;}
+    .vinyl{width:150px;height:150px;}
+    .vinyl img{width:70px;height:70px;}
+    button{padding:8px 18px;font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+
+<div class="slide">
+    <div style="text-align:center;">
+        <div class="envelope-title">klik amplopnya ya</div>
+        <div class="envelope" onclick="openEnvelope(this)">
+            <div class="env-body"></div>
+            <div class="env-flap"></div>
+            <div class="letter">Spesial buat Dayuuu yang lagi ulang tahun 💖</div>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="postcard">
+        <h1>Selamat bertambah umur, Dayuuu! ✨</h1>
+        <div class="message" id="typing-text"></div>
+        <button class="next-btn" onclick="next()">Lanjut</button>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="postcard">
+        <h1>Lagu Spesial Buatmu</h1>
+        <div class="vinyl">
+            <img src="cover.jpeg" alt="Cover">
+        </div>
+        <div class="button-group">
+    <button onclick="toggleMusic()">Putar / Jeda Musik 🎵</button>
+    <button class="next-btn" onclick="next()">Lanjut</button>
+</div>
+        <audio id="music" loop>
+            <source src="song.mp3" type="audio/mp3">
+        </audio>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="postcard">
+        <h1>Surat Kecil Buat Dayuuu</h1>
+        <img src="poto.png" alt="Foto" class="photo-simple">
+        <div class="message">
+            Kamu itu berharga banget buat orang-orang di sekitarmu. Semoga hari ini penuh dengan kebahagiaan dan kehangatan ya!
+        </div>
+        <button class="next-btn" onclick="next()">Lanjut</button>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="postcard">
+        <h1>Tiup Lilinnya Dong</h1>
+        <div class="cake">
+            <div class="candle">
+                <div class="flame" onclick="blowCandle(this)"></div>
+            </div>
+        </div>
+        <div class="message">
+            Pejamkan mata indahmu, buat permohonan... lalu klik api lilinnya untuk meniup! 🎂
+        </div>
+        <button class="next-btn" onclick="next()">Lanjut</button>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="postcard">
+        <h1>Klik 3 Bintang Ini ✨</h1>
+        <div class="stars-container">
+            <div class="memory-star" onclick="revealMemory(this,'Ketawamu pas lagi bercanda itu selalu manis dan bikin suasana rame.')">★</div>
+            <div class="memory-star" onclick="revealMemory(this,'Semoga semua usaha dan kerja kerasmu buat ngejar impian bisa terwujud tahun ini!')">★</div>
+            <div class="memory-star" onclick="revealMemory(this,'Senyumanmu itu beneran kayak sinar matahari yang cerah banget.')">★</div>
+        </div>
+        <div class="memory-text" id="memoryText"></div>
+        <button class="next-btn" onclick="next()">Lanjut</button>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="postcard">
+        <h1>Sekali lagi, Selamat Ulang Tahun!</h1>
+        <div class="final-letter">
+            Aku beneran bersyukur banget kamu ada di dunia ini.<br><br>
+            Semoga tahun ini berjalan lebih lembut, lebih baik, dan jauh lebih cerah buat kamu.<br><br>
+            Kamu selalu pantas mendapatkan hal-hal terbaik, Dayuuu. 
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+let current=0;
+const totalSlides=document.querySelectorAll(".slide").length;
+const text="Aku berharap tahun ini terasa lebih ringan, lebih cerah, dan lebih baik buat kamu. Semoga segala hal yang diam-diam kamu semogakan bisa segera terwujud nyata ya.";
+let index=0;
+
+// ================= PENGATURAN MUSIK =================
+const mulaiDiDetik = 0; // GANTI ANGKA INI: detik lagu mulai (contoh: 45 untuk mulai di detik ke-45)
+let isFirstPlay = true;
+// ====================================================
+
+function next(){
+    if(current < totalSlides-1){
+        current++;
+        document.getElementById("container").style.transform="translateX(-"+current*100+"vw)";
+        if(current === 1 && index===0){typeEffect();}
+    }
+}
+
+function toggleMusic(){
+    const m = document.getElementById("music");
+    
+    // Kalau ini pertama kalinya lagu diputar, atur detik mulainya
+    if (isFirstPlay) {
+        m.currentTime = mulaiDiDetik;
+        isFirstPlay = false; // Tandai supaya pas di-pause lalu di-play lagi gak ngulang ke detik ini
+    }
+
+    m.paused ? m.play() : m.pause();
+}
+
+function openEnvelope(el){
+    if(!el.classList.contains("open")){
+        el.classList.add("open");
+
+        const slide1 = el.parentElement; 
+        let nextBtn = document.createElement("button");
+        nextBtn.className = "next-btn";
+        nextBtn.innerText = "Lanjut";
+        nextBtn.onclick = next;
+        slide1.appendChild(nextBtn);
+    }
+}
+
+function typeEffect(){
+    if(index<text.length){
+        document.getElementById("typing-text").innerHTML += text.charAt(index);
+        index++;
+        setTimeout(typeEffect,35);
+    }
+}
+
+function blowCandle(el){
+    el.style.display="none";
+    launchConfetti();
+}
+
+function launchConfetti(){
+    for(let i=0;i<50;i++){
+        let c=document.createElement("div");
+        c.className="confetti";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=['#ff477e','#ff7096','#ff85a1','#fbb1bd','#ffd166'][Math.floor(Math.random()*5)];
+        c.style.animationDuration=(2+Math.random()*2)+"s";
+        document.body.appendChild(c);
+        setTimeout(()=>{c.remove();},4000);
+    }
+}
+
+function revealMemory(star,text){
+    document.getElementById("memoryText").innerText=text;
+    star.style.color="#ff477e";
+}
+
+/* FITUR MATIKAN MUSIK SAAT KELUAR & LANJUTKAN SAAT KEMBALI */
+let isMusicPlayingBeforeLeave = false;
+
+document.addEventListener("visibilitychange", function() {
+    const m = document.getElementById("music");
+    
+    if (document.hidden) {
+        isMusicPlayingBeforeLeave = !m.paused; 
+        m.pause(); 
+    } else {
+        if (isMusicPlayingBeforeLeave) {
+            m.play();
+        }
+    }
+});
+
+/* stars bg */
+for(let i=0;i<70;i++){
+    let s=document.createElement("div");
+    s.className="star";
+    s.style.top=Math.random()*100+"vh";
+    s.style.left=Math.random()*100+"vw";
+    s.style.animationDuration=(2+Math.random()*3)+"s";
+    document.body.appendChild(s);
+}
+</script>
+</body>
+</html>
