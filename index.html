@@ -4,22 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Revalino Firdaus · Game Developer</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  
   <style>
+    /* ==========================================
+       NEOBRUTALISM CSS (PORTFOLIO)
+    ========================================== */
     :root {
-      --bg: #f7f4ef;
+      --bg-color: #f4e3c5; /* Beige */
+      --grid-line: #e3d2b5;
       --surface: #ffffff;
-      --ink: #1a1714;
-      --ink-light: #44403c;
-      --muted: #9c9690;
-      --border: #e8e3db;
-      --amber: #f0a500;
-      --amber-pale: #fff8e6;
-      --teal: #0ea5a0;
-      --coral: #f06060;
-      --green: #22c55e;
+      --ink: #000000;
+      
+      /* Warna-warni Neobrutalism */
+      --neo-pink: #ff66a3;
+      --neo-blue: #60a5fa;
+      --neo-green: #34d399;
+      --neo-yellow: #fde047;
+      --neo-cyan: #22d3ee;
+      --neo-purple: #c084fc;
+      
+      --border-thick: 3px solid #000000;
+      --hard-shadow: 6px 6px 0px #000000;
+      --hard-shadow-hover: 10px 10px 0px #000000;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,85 +38,98 @@
 
     body {
       font-family: 'Outfit', sans-serif;
-      background: var(--bg);
+      background-color: var(--bg-color);
+      /* Latar belakang grid retro */
+      background-image: linear-gradient(var(--grid-line) 2px, transparent 2px), linear-gradient(90deg, var(--grid-line) 2px, transparent 2px); 
+      background-size: 40px 40px; 
       color: var(--ink);
       overflow-x: hidden;
     }
+
+    h1, h2, h3, h4, h5, h6 { font-weight: 900; }
 
     /* ─── NAV ─── */
     nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 56px;
-      border-bottom: 1px solid var(--border);
-      background: #f7f4efee;
+      padding: 15px 50px;
+      border-bottom: var(--border-thick);
+      background: #ffffff;
       position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(14px);
+      box-shadow: 0px 4px 0px #000;
     }
 
     .nav-logo {
       font-family: 'Instrument Serif', serif;
-      font-size: 1.35rem;
+      font-size: 1.8rem;
+      font-weight: bold;
       color: var(--ink);
-      letter-spacing: -0.4px;
+      letter-spacing: -0.5px;
     }
-    .nav-logo span { color: var(--amber); }
+    .nav-logo span { color: var(--neo-pink); }
 
-    .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+    .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
     .nav-links a {
       text-decoration: none;
-      color: var(--muted);
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: color 0.15s;
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      transition: transform 0.1s;
+      padding: 5px 10px;
+      border: 2px solid transparent;
     }
-    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover { 
+      background-color: var(--neo-yellow);
+      border: 2px solid #000;
+      border-radius: 6px;
+      box-shadow: 2px 2px 0px #000;
+      transform: translate(-2px, -2px);
+    }
 
     .nav-cta {
-      background: var(--ink) !important;
-      color: white !important;
-      padding: 9px 22px;
-      border-radius: 100px;
-      font-size: 0.85rem !important;
-      font-weight: 600 !important;
-      transition: background 0.15s, transform 0.1s;
+      background: var(--neo-pink) !important;
+      color: #000 !important;
+      border: 2px solid #000 !important;
+      box-shadow: 3px 3px 0px #000 !important;
+      border-radius: 8px !important;
     }
-    .nav-cta:hover { background: var(--amber) !important; color: var(--ink) !important; transform: scale(1.03); }
+    .nav-cta:hover { background: var(--neo-cyan) !important; box-shadow: 5px 5px 0px #000 !important; }
 
     /* ─── HERO ─── */
     .hero {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 100px 56px 80px;
+      padding: 80px 40px;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 48px;
+      gap: 50px;
       align-items: center;
     }
-
-    .hero-left { animation: fadeUp 0.7s ease both; }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      background: var(--amber-pale);
-      border: 1px solid #f0c96050;
-      color: #9a6200;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
+      gap: 8px;
+      background: var(--neo-yellow);
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      color: #000;
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      padding: 6px 14px;
-      border-radius: 100px;
-      margin-bottom: 22px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 25px;
     }
 
     .hero-badge .dot {
-      width: 7px; height: 7px;
-      background: var(--green);
-      border-radius: 100px;
+      width: 10px; height: 10px;
+      background: var(--neo-green);
+      border: 2px solid #000;
+      border-radius: 50%;
       animation: pulse 2s infinite;
     }
 
@@ -115,381 +139,216 @@
     }
 
     .hero h1 {
-      font-family: 'Instrument Serif', serif;
-      font-size: clamp(3rem, 6vw, 5.2rem);
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(3rem, 6vw, 5rem);
       letter-spacing: -2px;
-      line-height: 1.05;
+      line-height: 1;
+      text-transform: uppercase;
       color: var(--ink);
-      margin-bottom: 6px;
+      margin-bottom: 10px;
+      text-shadow: 4px 4px 0px #fff, 6px 6px 0px #000;
     }
 
-    .hero h1 em { font-style: italic; color: var(--amber); }
+    .hero h1 em { font-style: normal; color: var(--neo-pink); }
 
     .hero-role {
-      font-size: 1rem;
-      color: var(--muted);
-      font-weight: 400;
-      margin-bottom: 22px;
-      letter-spacing: 0.02em;
+      font-size: 1.2rem;
+      color: var(--ink);
+      font-weight: 800;
+      background: #fff;
+      display: inline-block;
+      padding: 5px 15px;
+      border: 2px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      margin-bottom: 25px;
     }
 
     .hero-desc {
-      font-size: 1.05rem;
-      color: var(--ink-light);
-      font-weight: 300;
-      line-height: 1.8;
-      max-width: 480px;
-      margin-bottom: 36px;
-    }
-
-    .hero-desc strong { font-weight: 600; color: var(--ink); }
-
-    .hero-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-
-    .btn-main {
-      background: var(--ink);
-      color: white;
-      text-decoration: none;
-      padding: 13px 28px;
-      border-radius: 100px;
-      font-weight: 600;
-      font-size: 0.92rem;
-      transition: background 0.15s, transform 0.1s;
-      display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-main:hover { background: var(--amber); color: var(--ink); transform: scale(1.02); }
-
-    .btn-ghost {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 500;
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: color 0.15s;
-      border: 1.5px solid var(--border);
-      padding: 12px 22px;
-      border-radius: 100px;
-    }
-    .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
-
-    /* avatar card */
-    .hero-right {
-      animation: fadeUp 0.7s 0.15s ease both;
-      flex-shrink: 0;
-    }
-
-    .avatar-card {
-      width: 240px;
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 28px;
-      padding: 28px 24px;
-      text-align: center;
-      box-shadow: 0 8px 32px rgba(26,23,20,0.08);
-    }
-
-    .avatar {
-      width: 90px; height: 90px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--amber), var(--coral));
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Instrument Serif', serif;
-      font-size: 2rem;
-      font-weight: 700;
-      color: white;
-      letter-spacing: -1px;
-      margin: 0 auto 14px;
-      box-shadow: 0 6px 20px #f0a50040;
-    }
-
-    .avatar-name {
-      font-family: 'Instrument Serif', serif;
       font-size: 1.1rem;
       color: var(--ink);
-      margin-bottom: 2px;
-    }
-
-    .avatar-school {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-
-    .avatar-ig {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: var(--amber-pale);
-      color: #9a6200;
-      font-size: 0.78rem;
       font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: background 0.15s;
+      line-height: 1.6;
+      max-width: 500px;
+      margin-bottom: 35px;
+      background: #fff;
+      padding: 20px;
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0px #000;
+      border-radius: 12px;
     }
-    .avatar-ig:hover { background: #fde68a; }
+
+    .btn-neo {
+      background: var(--neo-blue);
+      color: #000;
+      text-decoration: none;
+      padding: 14px 28px;
+      border: 3px solid #000;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 1rem;
+      text-transform: uppercase;
+      box-shadow: 4px 4px 0px #000;
+      transition: all 0.1s ease;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-neo:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; background: var(--neo-cyan); }
+    .btn-neo:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
+
+    /* Avatar Card */
+    .avatar-card {
+      width: 280px;
+      background: var(--neo-pink);
+      border: var(--border-thick);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: var(--hard-shadow);
+      transform: rotate(2deg);
+      transition: transform 0.2s;
+    }
+    .avatar-card:hover { transform: rotate(-2deg) scale(1.02); box-shadow: var(--hard-shadow-hover); }
+
+    .avatar {
+      width: 120px; height: 120px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: var(--border-thick);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Instrument Serif', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--ink);
+      margin: 0 auto 20px;
+      box-shadow: 4px 4px 0px #000;
+    }
+    .avatar-wrapper {
+    width: 80px;        /* Sesuaikan ukuran yang diinginkan */
+    height: 80px;
+    border-radius: 50%; /* Membuat lingkaran sempurna */
+    overflow: hidden;   /* Bagian gambar yang keluar lingkaran akan dipotong */
+    border: 3px solid #000; /* Garis tepi khas Neobrutalism */
+    box-shadow: 4px 4px 0px #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4e3c5;
+}
+
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* Ini kunci agar gambar tidak gepeng, akan di-crop otomatis */
+}
+
+    .avatar-name { font-size: 1.4rem; font-weight: 900; margin-bottom: 5px; }
+    .avatar-school { font-size: 0.9rem; font-weight: 800; margin-bottom: 20px; background: #fff; border: 2px solid #000; display: inline-block; padding: 2px 10px; }
+    
+    .avatar-ig {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fff; border: 2px solid #000; box-shadow: 2px 2px 0px #000;
+      color: #000; font-weight: 800; padding: 8px 16px; border-radius: 8px; text-decoration: none;
+    }
+    .avatar-ig:hover { background: var(--neo-yellow); }
+
+    /* ─── SECTION UMUM ─── */
+    .section { max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
+    .section-title {
+      font-size: 3rem; text-transform: uppercase; color: var(--ink); margin-bottom: 40px;
+      text-shadow: 3px 3px 0px #fff, 5px 5px 0px #000;
+    }
+    .section-title em { font-style: normal; color: var(--neo-blue); }
 
     /* ─── SKILLS ─── */
-    .section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 64px 56px;
-    }
-
-    .section-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .section-title {
-      font-family: 'Instrument Serif', serif;
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      letter-spacing: -1px;
-      color: var(--ink);
-      margin-bottom: 36px;
-    }
-    .section-title em { font-style: italic; color: var(--amber); }
-
     .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 14px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px;
     }
-
     .skill-chip {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      background: var(--surface); border: var(--border-thick); border-radius: 12px;
+      padding: 20px; text-align: center; box-shadow: 4px 4px 0px #000;
+      transition: transform 0.1s;
     }
+    .skill-chip:hover { transform: translate(-3px, -3px); box-shadow: 7px 7px 0px #000; }
+    .s-icon { font-size: 2.5rem; margin-bottom: 10px; color: var(--ink); }
+    .s-name { font-weight: 900; font-size: 1.1rem; text-transform: uppercase; }
 
-    .skill-chip:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(26,23,20,0.08);
-    }
-
-    .skill-chip .s-icon {
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--amber);
-      background: var(--amber-pale);
-      border-radius: 6px;
-      padding: 4px 8px;
-      display: inline-block;
-      width: fit-content;
-    }
-    .skill-chip .s-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--ink);
-    }
-    .skill-chip .s-level {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 100px;
-      display: inline-block;
-      width: fit-content;
-    }
-
-    .level-mastered { background: #d1fae5; color: #065f46; }
-    .level-learning { background: #fff3d6; color: #92400e; }
-
-    /* ─── PROJECTS ─── */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-    }
-
+    /* ─── PROJECTS (ITCH.IO READY) ─── */
     .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;
     }
 
     .project-card {
-      background: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 22px;
-      overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--surface); border: var(--border-thick); border-radius: 16px;
+      overflow: hidden; box-shadow: var(--hard-shadow); display: flex; flex-direction: column;
+      transition: transform 0.1s;
     }
+    .project-card:hover { transform: translate(-4px, -4px); box-shadow: var(--hard-shadow-hover); }
 
-    .project-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 48px rgba(26,23,20,0.1);
-    }
-
+    /* Placeholder Gambar Game */
     .project-thumb {
-      height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
+      height: 200px; border-bottom: var(--border-thick);
+      display: flex; align-items: center; justify-content: center; font-size: 4rem;
     }
+    .bg-1 { background-color: var(--neo-purple); }
+    .bg-2 { background-color: var(--neo-yellow); }
+    .bg-3 { background-color: var(--neo-cyan); }
 
-    .project-thumb::before,
-    .project-thumb::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-    }
-
-    .thumb-1 { background: linear-gradient(135deg, #fff3d6, #fde68a); }
-    .thumb-1::before { width: 120px; height: 120px; background: #f0a50030; top: -30px; right: -20px; }
-    .thumb-1::after  { width: 80px;  height: 80px;  background: #f0a50020; bottom: -20px; left: 20px; }
-
-    .thumb-2 { background: linear-gradient(135deg, #d6f5f3, #a7f3d0); }
-    .thumb-2::before { width: 140px; height: 140px; background: #0ea5a020; top: -40px; left: -30px; }
-    .thumb-2::after  { width: 60px;  height: 60px;  background: #0ea5a030; bottom: 10px; right: 30px; }
-
-    .thumb-3 { background: linear-gradient(135deg, #fde8e8, #fecaca); }
-    .thumb-3::before { width: 100px; height: 100px; background: #f0606025; bottom: -20px; right: -10px; }
-    .thumb-3::after  { width: 70px;  height: 70px;  background: #f0606015; top: 10px; left: 40px; }
-
-    .thumb-label {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.1rem;
-      font-style: italic;
-      letter-spacing: -0.3px;
-      color: rgba(26,23,20,0.4);
-      position: relative;
-      z-index: 1;
-    }
-
-    .project-body { padding: 22px 20px; }
-
-    .project-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
+    .project-body { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+    .project-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
     .tag {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      font-size: 0.75rem; font-weight: 800; text-transform: uppercase;
+      background: #fff; border: 2px solid #000; padding: 4px 10px; box-shadow: 2px 2px 0px #000;
+    }
+    
+    .project-name { font-size: 1.5rem; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+    .project-desc { font-size: 0.95rem; font-weight: 600; line-height: 1.5; margin-bottom: 25px; flex-grow: 1; }
+
+    /* Tombol Khusus Itch.io */
+    .btn-itch {
+      background: #fa5c5c; /* Warna khas Itch.io */
+      color: #fff;
+      text-decoration: none;
+      padding: 12px;
+      border: 3px solid #000;
+      border-radius: 8px;
+      font-weight: 900;
+      font-size: 1.1rem;
       text-transform: uppercase;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 3px 9px;
-      border-radius: 100px;
+      text-align: center;
+      box-shadow: 4px 4px 0px #000;
+      transition: all 0.1s ease;
+      display: block;
     }
-
-    .project-name {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.3rem;
-      color: var(--ink);
-      margin-bottom: 8px;
-    }
-
-    .project-desc {
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.65;
-      font-weight: 300;
-    }
+    .btn-itch:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #000; background: #ff4747; color: #fff;}
+    .btn-itch:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #000; }
 
     /* ─── CONTACT ─── */
     .contact-section {
-      background: var(--ink);
-      padding: 80px 56px;
-      text-align: center;
+      background: var(--ink); border-top: 5px solid var(--neo-pink);
+      padding: 80px 40px; text-align: center; color: white;
     }
+    .contact-section h2 { font-size: clamp(2.5rem, 6vw, 4rem); text-transform: uppercase; margin-bottom: 20px; }
+    .contact-section h2 em { font-style: normal; color: var(--neo-yellow); }
+    .contact-section p { font-size: 1.2rem; font-weight: 600; max-width: 500px; margin: 0 auto 40px; }
 
-    .contact-section .section-label { color: #ffffff50; }
-
-    .contact-section h2 {
-      font-family: 'Instrument Serif', serif;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      letter-spacing: -1.5px;
-      color: white;
-      margin-bottom: 14px;
-      line-height: 1.1;
-    }
-
-    .contact-section h2 em { font-style: italic; color: var(--amber); }
-
-    .contact-section p {
-      font-size: 1rem;
-      color: #ffffff70;
-      font-weight: 300;
-      margin-bottom: 36px;
-      max-width: 400px;
-      margin-left: auto; margin-right: auto;
-      line-height: 1.7;
-    }
-
-    .contact-links {
-      display: flex;
-      gap: 14px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
+    .contact-links { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
     .contact-link {
-      background: #ffffff12;
-      border: 1.5px solid #ffffff20;
-      color: white;
-      text-decoration: none;
-      padding: 12px 24px;
-      border-radius: 100px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: background 0.15s, transform 0.1s;
+      background: var(--surface); color: #000; border: 3px solid #000; box-shadow: 4px 4px 0px #fff;
+      text-decoration: none; padding: 15px 30px; border-radius: 8px; font-size: 1.1rem; font-weight: 900; text-transform: uppercase; transition: all 0.1s;
     }
-    .contact-link:hover { background: var(--amber); color: var(--ink); border-color: var(--amber); transform: scale(1.03); }
+    .contact-link:hover { background: var(--neo-green); transform: translate(-2px, -2px); box-shadow: 6px 6px 0px #fff; }
 
     /* ─── FOOTER ─── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--bg);
-    }
-
-    .footer-logo {
-      font-family: 'Instrument Serif', serif;
-      font-size: 1.1rem;
-      color: var(--ink);
-    }
-    .footer-logo span { color: var(--amber); }
-    footer p { font-size: 0.8rem; color: var(--muted); }
-
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    footer { border-top: 2px solid #333; padding: 25px 40px; text-align: center; background: #000; color: #fff; font-weight: 600;}
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 860px) {
-      nav { padding: 18px 24px; }
-      .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding: 64px 24px 48px; }
+      nav { padding: 15px 25px; }
+      .nav-links { display: none; } /* Hamburger menu disarankan untuk mobile */
+      .hero { grid-template-columns: 1fr; padding: 40px 25px; text-align: center; }
+      .hero-desc { margin: 0 auto 30px; }
       .hero-right { display: flex; justify-content: center; }
-      .section { padding: 48px 24px; }
-      .contact-section { padding: 64px 24px; }
-      footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px; }
+      .section { padding: 60px 25px; }
+      .section-title { font-size: 2.2rem; }
     }
   </style>
 </head>
@@ -497,11 +356,11 @@
 
   <!-- NAV -->
   <nav>
-    <div class="nav-logo">revalino<span>.</span></div>
+    <div class="nav-logo">Repalco<span>.</span></div>
     <ul class="nav-links">
       <li><a href="#about">Tentang</a></li>
       <li><a href="#skills">Skill</a></li>
-      <li><a href="#projects">Proyek</a></li>
+      <li><a href="#projects">Game & Proyek</a></li>
       <li><a href="#contact" class="nav-cta">Hubungi Saya</a></li>
     </ul>
   </nav>
@@ -512,142 +371,142 @@
       <div class="hero-left">
         <div class="hero-badge">
           <span class="dot"></span>
-          Mahasiswa PENS · Game Developer
+          Game Developer · Mahasiswa PENS
         </div>
         <h1>Revalino<br><em>Firdaus.</em></h1>
-        <p class="hero-role">Game Developer · Web Developer · Creative Maker</p>
-        <p class="hero-desc">
-          Mahasiswa <strong>Politeknik Elektronika Negeri Surabaya</strong> yang passionate di dunia game development. Saat ini sedang mendalami <strong>Unity</strong> sambil membangun proyek-proyek digital yang kreatif dan bermakna.
-        </p>
+        <div class="hero-role">Creative Maker & Programmer</div>
+        <div class="hero-desc">
+          Mahasiswa Politeknik Elektronika Negeri Surabaya yang passionate di dunia game development. Sedang gencar mendalami <strong>Unity</strong> dan membangun ekosistem digital yang kreatif!
+        </div>
         <div class="hero-actions">
-          <a href="#projects" class="btn-main">Lihat Karya Saya →</a>
-          <a href="#contact" class="btn-ghost">Hubungi Saya</a>
+          <a href="#projects" class="btn-neo"><i class="fas fa-gamepad"></i> Mainkan Game Saya</a>
         </div>
       </div>
       <div class="hero-right">
         <div class="avatar-card">
-          <div class="avatar">RF</div>
-          <div class="avatar-name">Revalino Firdaus</div>
+          <div class="avatar-wrapper">
+        <img src="assets/uploads/lab_1780592319_6a21aebfdd57b.png" alt="Avatar">
+    </div>
+          <div class="avatar-name">Revalino</div>
           <div class="avatar-school">PENS · Surabaya</div>
           <a href="https://instagram.com/repal.co" target="_blank" class="avatar-ig">
-            @repal.co
+            <i class="fab fa-instagram"></i> @repal.co
           </a>
         </div>
       </div>
     </div>
   </section>
 
-  <hr class="divider">
-
   <!-- SKILLS -->
   <section class="section" id="skills">
-    <div class="section-label">Keahlian</div>
-    <div class="section-title">Yang saya <em>kuasai</em> &<br>sedang dipelajari</div>
+    <h2 class="section-title">Tech <em>Arsenal</em></h2>
     <div class="skills-grid">
-      <div class="skill-chip">
-        <div class="s-icon">HTML</div>
-        <div class="s-name">HTML</div>
-        <span class="s-level level-mastered">Dikuasai</span>
+      <div class="skill-chip" style="background: var(--neo-pink);">
+        <div class="s-icon"><i class="fab fa-html5"></i></div>
+        <div class="s-name">HTML & CSS</div>
       </div>
-      <div class="skill-chip">
-        <div class="s-icon">CSS</div>
-        <div class="s-name">CSS</div>
-        <span class="s-level level-mastered">Dikuasai</span>
-      </div>
-      <div class="skill-chip">
-        <div class="s-icon">JS</div>
+      <div class="skill-chip" style="background: var(--neo-yellow);">
+        <div class="s-icon"><i class="fab fa-js-square"></i></div>
         <div class="s-name">JavaScript</div>
-        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-      <div class="skill-chip">
-        <div class="s-icon">Node</div>
+      <div class="skill-chip" style="background: var(--neo-green);">
+        <div class="s-icon"><i class="fab fa-node-js"></i></div>
         <div class="s-name">Node.js</div>
-        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-      <div class="skill-chip">
-        <div class="s-icon">PHP</div>
+      <div class="skill-chip" style="background: var(--neo-blue);">
+        <div class="s-icon"><i class="fab fa-php"></i></div>
         <div class="s-name">PHP</div>
-        <span class="s-level level-mastered">Dikuasai</span>
       </div>
-      <div class="skill-chip">
-        <div class="s-icon">TW</div>
-        <div class="s-name">Tailwind CSS</div>
-        <span class="s-level level-mastered">Dikuasai</span>
+      <div class="skill-chip" style="background: var(--neo-cyan);">
+        <div class="s-icon"><i class="fab fa-css3-alt"></i></div>
+        <div class="s-name">Tailwind</div>
       </div>
-      <div class="skill-chip">
-        <div class="s-icon">CVA</div>
-        <div class="s-name">Canva</div>
-        <span class="s-level level-mastered">Dikuasai</span>
-      </div>
-      <div class="skill-chip">
-        <div class="s-icon">Unity</div>
-        <div class="s-name">Unity</div>
-        <span class="s-level level-learning">Dipelajari</span>
+      <div class="skill-chip" style="background: #e2e8f0;">
+        <div class="s-icon"><i class="fab fa-unity"></i></div>
+        <div class="s-name">Unity (WIP)</div>
       </div>
     </div>
   </section>
 
-  <hr class="divider">
-
-  <!-- PROJECTS -->
+  <!-- PROJECTS (GAMES ITCH.IO) -->
   <section class="section" id="projects">
-    <div class="section-label">Proyek</div>
-    <div class="section-title">Beberapa hal yang<br>pernah saya <em>buat</em></div>
+    <h2 class="section-title">My <em>Games</em> & Apps</h2>
     <div class="projects-grid">
+      
+      <!-- KARTU GAME 1 -->
       <div class="project-card">
-        <div class="project-thumb thumb-1"><span class="thumb-label">repal.me</span></div>
+        <div class="project-thumb bg-1"><i class="fas fa-dice"></i></div>
         <div class="project-body">
           <div class="project-tags">
-            <span class="tag">HTML</span>
-            <span class="tag">CSS</span>
-            <span class="tag">JavaScript</span>
+            <span class="tag" style="background: var(--neo-yellow);">JavaScript</span>
+            <span class="tag">Web Game</span>
           </div>
-          <div class="project-name">repal.me Game Hub</div>
-          <p class="project-desc">4 game acak dalam satu halaman — tebak angka, lempar dadu, suit, dan tebak koin. Dibangun murni dengan vanilla JS.</p>
+          <div class="project-name">Repal.me Game Hub</div>
+          <p class="project-desc">Koleksi 4 mini-game klasik (Tebak Angka, Lempar Dadu, Suit, Tebak Koin) yang dibangun 100% menggunakan Vanilla JS.</p>
+          
+          <!-- TEMPEL LINK ITCH.IO ATAU WEB ANDA DI SINI (href) -->
+          <a href="https://link-itch-io-anda-disini.itch.io" target="_blank" class="btn-itch">
+            <i class="fab fa-itch-io me-1"></i> Mainkan di Itch.io
+          </a>
         </div>
       </div>
+
+      <!-- KARTU GAME 2 -->
       <div class="project-card">
-        <div class="project-thumb thumb-2"><span class="thumb-label">Web App</span></div>
+        <div class="project-thumb bg-2"><i class="fab fa-unity text-dark"></i></div>
         <div class="project-body">
           <div class="project-tags">
-            <span class="tag">Node.js</span>
-            <span class="tag">PHP</span>
+            <span class="tag" style="background: #e2e8f0;">Unity</span>
+            <span class="tag" style="background: var(--neo-green);">In Progress</span>
           </div>
-          <div class="project-name">Web App Project</div>
-          <p class="project-desc">Proyek web fullstack menggunakan Node.js di sisi server dan PHP untuk backend — part dari pengerjaan tugas kuliah di PENS.</p>
+          <div class="project-name">The First Quest (WIP)</div>
+          <p class="project-desc">Proyek game 2D/3D pertama yang sedang dikembangkan menggunakan Unity Engine. Fokus pada mekanik pergerakan dan physics.</p>
+          
+          <!-- TEMPEL LINK ITCH.IO ANDA DI SINI -->
+          <a href="#" target="_blank" class="btn-itch" style="background:#555; pointer-events:none;">
+            <i class="fas fa-tools me-1"></i> Segera Hadir
+          </a>
         </div>
       </div>
+
+      <!-- KARTU PROJECT 3 -->
       <div class="project-card">
-        <div class="project-thumb thumb-3"><span class="thumb-label">Unity WIP</span></div>
+        <div class="project-thumb bg-3"><i class="fas fa-server"></i></div>
         <div class="project-body">
           <div class="project-tags">
-            <span class="tag">Unity</span>
-            <span class="tag">C#</span>
-            <span class="tag">In Progress</span>
+            <span class="tag" style="background: var(--neo-blue);">PHP</span>
+            <span class="tag">Web App</span>
           </div>
-          <div class="project-name">Unity Game (WIP)</div>
-          <p class="project-desc">Game pertama yang sedang dikembangkan di Unity. Masih dalam tahap eksplorasi dan pembelajaran engine.</p>
+          <div class="project-name">SIMLAB System</div>
+          <p class="project-desc">Sistem Informasi Manajemen Laboratorium (Admin Panel, Peminjaman, Inventaris) dengan UI brutalist yang sangat interaktif.</p>
+          
+          <a href="#" class="btn-itch" style="background: var(--ink);">
+            <i class="fas fa-external-link-alt me-1"></i> Kunjungi Web
+          </a>
         </div>
       </div>
+
     </div>
   </section>
 
   <!-- CONTACT -->
   <section class="contact-section" id="contact">
-    <div class="section-label">Kontak</div>
-    <h2>Mari <em>berkolaborasi</em><br>bersama!</h2>
-    <p>Punya ide proyek, pertanyaan, atau sekadar ingin ngobrol soal game dev? Jangan ragu untuk menghubungi saya.</p>
+    <h2>Mari <em>Bikin Game</em> Bareng!</h2>
+    <p>Tertarik untuk game jam bareng, ngobrolin script Unity, atau kolaborasi web app? Kirim pesan ke saya!</p>
     <div class="contact-links">
       <a href="https://instagram.com/repal.co" target="_blank" class="contact-link">
-        Instagram — @repal.co
+        <i class="fab fa-instagram"></i> @repal.co
       </a>
-      <a href="mailto:revalinofirdaus@gt.students.pens.ac.id" class="contact-link">
-        Email Saya
+      <a href="mailto:revalinofirdaus@gt.students.pens.ac.id" class="contact-link" style="background: var(--neo-pink);">
+        <i class="fas fa-envelope"></i> Email Saya
       </a>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-logo">revalino<span>.</span></div>
-    <p>© 2026 Revalino Firdaus · PENS · Dibuat dengan sepenuh hati</p>
+    <p>© 2026 REVALINO FIRDAUS · PENS GAME TECHNOLOGY</p>
+  </footer>
+
+</body>
+</html>
